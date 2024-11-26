@@ -1,0 +1,31 @@
+local player = game.Players.LocalPlayer
+local backpack = player.Backpack
+
+-- Function to equip and unequip the gears quickly
+local function toggleGear()
+    -- Check if there are at least two items in the backpack
+    if #backpack:GetChildren() >= 2 then
+        local firstGear = backpack:GetChildren()[1]  -- First gear
+        local secondGear = backpack:GetChildren()[2]  -- Second gear
+
+        -- Equip the first gear, unequip it, and then equip the second gear
+        if firstGear and secondGear then
+            -- Equip first gear
+            firstGear.Parent = player.Character
+            wait()  -- Wait for the gear to equip
+            firstGear.Parent = backpack  -- Unequip it
+            wait()  -- Wait before equipping second gear
+            
+            -- Equip second gear
+            secondGear.Parent = player.Character
+            wait()  -- Wait for the gear to equip
+            secondGear.Parent = backpack  -- Unequip it
+        end
+    end
+end
+
+-- Call the function to toggle between the gears
+while true do
+toggleGear()
+wait()
+end
