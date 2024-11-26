@@ -37,7 +37,7 @@ Tab:AddButton({
                     if obj:IsA("Model") then
                         local head = obj:FindFirstChild("Head")
                         if head and head:IsA("BasePart") then
-                            head.Size = Vector3.new(8, 8, 8)
+                            head.Size = Vector3.new(10, 10, 10)
                             head.CanCollide = false
                             head.Transparency = 0 -- Ensure the head remains visible
                         end
