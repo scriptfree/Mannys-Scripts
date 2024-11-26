@@ -31,88 +31,41 @@ Tab:AddToggle({
     Default = false,
     Callback = function(Value)
         local zombieFolder = workspace:FindFirstChild("Zombie Storage")
-
-        if zombieFolder then
-            -- Function to apply big head size to zombies
-            local function setBigHead(zombie, bigHead)
-                local head = zombie:FindFirstChild("Head")
-                if head and head:IsA("BasePart") then
-                    if bigHead then
-                        if head.Size ~= Vector3.new(10, 10, 10) then
-                            head.Size = Vector3.new(10, 10, 10)  -- Big head size
-                            head.CanCollide = false
-                            head.Transparency = 0  -- Ensure the head remains visible
-                        end
-                    else
-                        if head.Size ~= Vector3.new(2, 1, 1) then
-                            head.Size = Vector3.new(2, 1, 1)  -- Normal head size
-                            head.CanCollide = true
-                            head.Transparency = 0  -- Ensure the head remains visible
-                        end
-                    end
+        
+        -- Function to apply big head to zombies
+        local function setBigHead(zombie)
+            local head = zombie:FindFirstChild("Head")
+            if head and head:IsA("BasePart") then
+                if head.Size ~= Vector3.new(15, 15, 15) then
+                    head.Size = Vector3.new(15, 15, 15)  -- Set head size to 15
+                    head.CanCollide = false
+                    head.Transparency = 0  -- Ensure the head remains visible
                 end
             end
+        end
 
-            -- Function to process all zombies in the folder
-            local function processZombies(bigHead)
-                for _, obj in pairs(zombieFolder:GetChildren()) do
-                    if obj:IsA("Model") then
-                        setBigHead(obj, bigHead)
-
-                        -- Handle other body parts' transparency and collision
-                        for _, part in pairs(obj:GetChildren()) do
-                            if part:IsA("BasePart") and part.Name ~= "Head" then
-                                if bigHead then
-                                    if part.Transparency ~= 1 then
-                                        part.Transparency = 1  -- Make other parts invisible
-                                    end
-                                    if part.CanCollide then
-                                        part.CanCollide = false
-                                    end
-                                else
-                                    if part.Transparency ~= 0 then
-                                        part.Transparency = 0  -- Make other parts visible
-                                    end
-                                    if not part.CanCollide then
-                                        part.CanCollide = true
-                                    end
-                                end
+        -- Continuously check zombies and apply the big head when the toggle is on
+        spawn(function()
+            while true do
+                if Value then
+                    -- Loop through all zombies in the folder and give them big heads
+                    if zombieFolder then
+                        for _, obj in pairs(zombieFolder:GetChildren()) do
+                            if obj:IsA("Model") then
+                                setBigHead(obj)
                             end
                         end
                     end
                 end
+                wait()  -- Wait a little bit before checking again
             end
-
-            -- Handle the toggle on/off and ensure big heads are applied when the toggle is on
-            local headBig = Value
-            if headBig then
-                processZombies(true)  -- Apply big heads to existing zombies
-            else
-                processZombies(false)  -- Set to normal size
-            end
-
-            -- Monitor for new zombies being added to the folder
-            zombieFolder.ChildAdded:Connect(function(child)
-                if child:IsA("Model") then
-                    setBigHead(child, headBig)  -- Apply big head to new zombie
-                end
-            end)
-
-            -- Continuously update if the toggle is on
-            spawn(function()
-                while true do
-                    if Value ~= headBig then  -- If toggle state changes
-                        headBig = Value
-                        processZombies(headBig)  -- Apply big heads or revert to normal
-                    end
-                    wait()  -- Adjust the loop delay as needed
-                end
-            end)
-        else
-            warn("Zombie Storage folder not found!")
-        end
+        end)
     end
 })
+
+
+
+
 
 local Tab = Window:MakeTab({
 	Name = "Exit",
