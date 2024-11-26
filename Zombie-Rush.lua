@@ -25,3 +25,38 @@ local Tab = Window:MakeTab({
 	Icon = "rbxassetid://4034483357",
 	PremiumOnly = false
 })
+
+Tab:AddButton({
+    Name = "Pause/bighead zombies",
+    Callback = function()
+        local zombieFolder = workspace:FindFirstChild("Zombie Storage")
+
+        if zombieFolder then
+            local function processZombies(folder)
+                for _, obj in pairs(folder:GetChildren()) do
+                    if obj:IsA("Model") then
+                        local head = obj:FindFirstChild("Head")
+                        if head and head:IsA("BasePart") then
+                            head.Size = Vector3.new(8, 8, 8)
+                            head.CanCollide = false
+                            head.Transparency = 0 -- Ensure the head remains visible
+                        end
+
+                        for _, part in pairs(obj:GetChildren()) do
+                            if part:IsA("BasePart") and part.Name ~= "Head" then
+                                part.Transparency = 1 -- Make all other parts invisible
+                                part.CanCollide = false -- Disable collisions for all other parts
+                            end
+                        end
+                    elseif obj:IsA("Folder") or obj:IsA("Model") then
+                        processZombies(obj) -- Recursively process nested folders or models
+                    end
+                end
+            end
+
+            processZombies(zombieFolder)
+        else
+            warn("Zombie Storage folder not found!")
+        end
+    end
+})
