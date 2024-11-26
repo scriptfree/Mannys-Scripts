@@ -27,7 +27,7 @@ local Tab = Window:MakeTab({
 })
 
 Tab:AddButton({
-    Name = "Pause/bighead zombies",
+    Name = "Big head zombies",
     Callback = function()
         local zombieFolder = workspace:FindFirstChild("Zombie Storage")
 
