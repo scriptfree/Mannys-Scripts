@@ -38,28 +38,47 @@ Tab:AddToggle({
                     if obj:IsA("Model") then
                         local head = obj:FindFirstChild("Head")
                         if head and head:IsA("BasePart") then
+                            -- Check if the head is already at the desired size and transparency to avoid flickering
                             if bigHead then
-                                head.Size = Vector3.new(10, 10, 10) -- Big head size
+                                if head.Size ~= Vector3.new(10, 10, 10) then
+                                    head.Size = Vector3.new(10, 10, 10)  -- Big head size
+                                end
+                                if head.Transparency ~= 0 then
+                                    head.Transparency = 0  -- Ensure head is visible
+                                end
                             else
-                                head.Size = Vector3.new(2, 1, 1) -- Default head size
+                                if head.Size ~= Vector3.new(2, 1, 1) then
+                                    head.Size = Vector3.new(2, 1, 1)  -- Default head size
+                                end
+                                if head.Transparency ~= 0 then
+                                    head.Transparency = 0  -- Ensure head is visible
+                                end
                             end
                             head.CanCollide = false
-                            head.Transparency = bigHead and 0 or 1 -- Keep head visible when big, make invisible when normal
                         end
 
+                        -- Handle other body parts' transparency and collision
                         for _, part in pairs(obj:GetChildren()) do
                             if part:IsA("BasePart") and part.Name ~= "Head" then
                                 if bigHead then
-                                    part.Transparency = 1 -- Make other parts invisible when toggle is on
-                                    part.CanCollide = false
+                                    if part.Transparency ~= 1 then
+                                        part.Transparency = 1  -- Make other parts invisible when toggle is on
+                                    end
+                                    if part.CanCollide then
+                                        part.CanCollide = false
+                                    end
                                 else
-                                    part.Transparency = 0 -- Make other parts visible when toggle is off
-                                    part.CanCollide = true -- Enable collision when toggle is off
+                                    if part.Transparency ~= 0 then
+                                        part.Transparency = 0  -- Make other parts visible when toggle is off
+                                    end
+                                    if not part.CanCollide then
+                                        part.CanCollide = true
+                                    end
                                 end
                             end
                         end
                     elseif obj:IsA("Folder") or obj:IsA("Model") then
-                        processZombies(obj, bigHead) -- Recursively process nested folders or models
+                        processZombies(obj, bigHead)  -- Recursively process nested folders or models
                     end
                 end
             end
@@ -80,6 +99,7 @@ Tab:AddToggle({
         end
     end
 })
+
 
 
 local Tab = Window:MakeTab({
