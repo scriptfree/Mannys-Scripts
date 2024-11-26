@@ -26,42 +26,41 @@ local Tab = Window:MakeTab({
 	PremiumOnly = false
 })
 
-Tab:AddToggle({
-    Name = "Big head zombies",
-    Default = false,
-    Callback = function(Value)
+Tab:AddButton({
+    Name = "Button!",
+    Callback = function()
         local zombieFolder = workspace:FindFirstChild("Zombie Storage")
-        
-        -- Function to apply big head to zombies
-        local function setBigHead(zombie)
-            local head = zombie:FindFirstChild("Head")
-            if head and head:IsA("BasePart") then
-                if head.Size ~= Vector3.new(15, 15, 15) then
-                    head.Size = Vector3.new(15, 15, 15)  -- Set head size to 15
-                    head.CanCollide = false
-                    head.Transparency = 0  -- Ensure the head remains visible
-                end
-            end
-        end
 
-        -- Continuously check zombies and apply the big head when the toggle is on
-        spawn(function()
-            while true do
-                if Value then
-                    -- Loop through all zombies in the folder and give them big heads
-                    if zombieFolder then
-                        for _, obj in pairs(zombieFolder:GetChildren()) do
-                            if obj:IsA("Model") then
-                                setBigHead(obj)
+        if zombieFolder then
+            local function processZombies(folder)
+                for _, obj in pairs(folder:GetChildren()) do
+                    if obj:IsA("Model") then
+                        local head = obj:FindFirstChild("Head")
+                        if head and head:IsA("BasePart") then
+                            head.Size = Vector3.new(13, 13, 13) -- Updated head size to 10
+                            head.CanCollide = false
+                            head.Transparency = 0 -- Ensure the head remains visible
+                        end
+
+                        for _, part in pairs(obj:GetChildren()) do
+                            if part:IsA("BasePart") and part.Name ~= "Head" then
+                                part.Transparency = 1 -- Make all other parts invisible
+                                part.CanCollide = false -- Disable collisions for all other parts
                             end
                         end
+                    elseif obj:IsA("Folder") or obj:IsA("Model") then
+                        processZombies(obj) -- Recursively process nested folders or models
                     end
                 end
-                wait()  -- Wait a little bit before checking again
             end
-        end)
+
+            processZombies(zombieFolder)
+        else
+            warn("Zombie Storage folder not found!")
+        end
     end
 })
+
 
 
 
