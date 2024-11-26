@@ -27,7 +27,7 @@ local Tab = Window:MakeTab({
 })
 
 Tab:AddButton({
-    Name = "Button!",
+    Name = "Big head zombies",
     Callback = function()
         local zombieFolder = workspace:FindFirstChild("Zombie Storage")
 
@@ -62,7 +62,7 @@ Tab:AddButton({
 })
 
 Tab:AddButton({
-    Name = "Bring Zombies",
+    Name = "Bring zombies",
     Callback = function()
         local zombieFolder = workspace:FindFirstChild("Zombie Storage")
         local player = game.Players.LocalPlayer
@@ -87,7 +87,29 @@ Tab:AddButton({
     end
 })
 
+Tab:AddButton({
+    Name = "Safe spot",
+    Callback = function()
+        -- Create a platform far from the map
+        local platformSize = Vector3.new(10, 1, 10) -- Platform size (10x1x10 studs)
+        local platformPosition = Vector3.new(10000, 500, 10000) -- Platform position far away from the map
 
+        -- Create the platform part
+        local platform = Instance.new("Part")
+        platform.Size = platformSize
+        platform.Position = platformPosition
+        platform.Anchored = true
+        platform.BrickColor = BrickColor.new("Bright blue") -- Change color if needed
+        platform.Name = "TeleportPlatform"
+        platform.Parent = workspace
+
+        -- Optionally, teleport the player to the platform (if desired)
+        local player = game.Players.LocalPlayer
+        if player and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+            player.Character.HumanoidRootPart.CFrame = CFrame.new(platformPosition + Vector3.new(0, 5, 0)) -- Teleport above platform
+        end
+    end    
+})
 
 
 
