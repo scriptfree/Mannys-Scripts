@@ -18,3 +18,10 @@ local Tab = Window:MakeTab({
 	PremiumOnly = false
 })
 
+Tab:AddParagraph("Thank you for using Manny's Script","Thank you for using my script, it means a lot to me!")
+
+local Tab = Window:MakeTab({
+	Name = "Main",
+	Icon = "rbxassetid://4034483357",
+	PremiumOnly = false
+})
