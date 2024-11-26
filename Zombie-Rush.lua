@@ -44,13 +44,18 @@ Tab:AddToggle({
                                 head.Size = Vector3.new(2, 1, 1) -- Default head size
                             end
                             head.CanCollide = false
-                            head.Transparency = 0 -- Ensure the head remains visible
+                            head.Transparency = bigHead and 0 or 1 -- Keep head visible when big, make invisible when normal
                         end
 
                         for _, part in pairs(obj:GetChildren()) do
                             if part:IsA("BasePart") and part.Name ~= "Head" then
-                                part.Transparency = bigHead and 1 or 0 -- Hide or show other parts
-                                part.CanCollide = false -- Disable collisions for other parts
+                                if bigHead then
+                                    part.Transparency = 1 -- Make other parts invisible when toggle is on
+                                    part.CanCollide = false
+                                else
+                                    part.Transparency = 0 -- Make other parts visible when toggle is off
+                                    part.CanCollide = true -- Enable collision when toggle is off
+                                end
                             end
                         end
                     elseif obj:IsA("Folder") or obj:IsA("Model") then
@@ -75,6 +80,7 @@ Tab:AddToggle({
         end
     end
 })
+
 
 local Tab = Window:MakeTab({
 	Name = "Exit",
