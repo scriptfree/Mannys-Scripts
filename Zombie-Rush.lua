@@ -60,3 +60,43 @@ Tab:AddButton({
         end
     end
 })
+
+Tab:AddToggle({
+    Name = "Big head zombies",
+    Default = false,
+    Callback = function(Value)
+        local zombieFolder = workspace:FindFirstChild("Zombie Storage")
+
+        if zombieFolder then
+            local function processZombies(folder, bigHead)
+                for _, obj in pairs(folder:GetChildren()) do
+                    if obj:IsA("Model") then
+                        local head = obj:FindFirstChild("Head")
+                        if head and head:IsA("BasePart") then
+                            if bigHead then
+                                head.Size = Vector3.new(10, 10, 10) -- Big head size
+                            else
+                                head.Size = Vector3.new(2, 1, 1) -- Default head size
+                            end
+                            head.CanCollide = false
+                            head.Transparency = 0 -- Ensure the head remains visible
+                        end
+
+                        for _, part in pairs(obj:GetChildren()) do
+                            if part:IsA("BasePart") and part.Name ~= "Head" then
+                                part.Transparency = bigHead and 1 or 0 -- Hide or show other parts
+                                part.CanCollide = false -- Disable collisions for other parts
+                            end
+                        end
+                    elseif obj:IsA("Folder") or obj:IsA("Model") then
+                        processZombies(obj, bigHead) -- Recursively process nested folders or models
+                    end
+                end
+            end
+
+            processZombies(zombieFolder, Value) -- Pass `Value` to determine toggle state
+        else
+            warn("Zombie Storage folder not found!")
+        end
+    end
+})
