@@ -61,6 +61,32 @@ Tab:AddButton({
     end
 })
 
+Tab:AddButton({
+    Name = "Bring Zombies",
+    Callback = function()
+        local zombieFolder = workspace:FindFirstChild("Zombie Storage")
+        local player = game.Players.LocalPlayer
+        local character = player.Character
+        if character and zombieFolder then
+            local characterPosition = character.HumanoidRootPart.Position
+            -- Position in front of the character (adjust distance as needed)
+            local teleportPosition = characterPosition + character.HumanoidRootPart.CFrame.LookVector * 10
+
+            for _, zombie in pairs(zombieFolder:GetChildren()) do
+                if zombie:IsA("Model") then
+                    local humanoidRootPart = zombie:FindFirstChild("HumanoidRootPart")
+                    if humanoidRootPart then
+                        -- Teleport each zombie in the folder to the position in front of the character
+                        humanoidRootPart.CFrame = CFrame.new(teleportPosition)
+                    end
+                end
+            end
+        else
+            warn("Zombie Storage folder or player character not found!")
+        end
+    end
+})
+
 
 
 
