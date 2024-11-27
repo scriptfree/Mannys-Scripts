@@ -75,6 +75,43 @@ Tab:AddButton({
     end    
 })
 
+Tab:AddButton({
+	Name = "Free helicopter", 
+	Callback = function()
+		-- Navigate to the lobby folder and delete specific objects in HeliPad inside HeliArea
+		local lobbyFolder = workspace:FindFirstChild("lobby")
+
+		if lobbyFolder then
+			local heliArea = lobbyFolder:FindFirstChild("HeliArea")
+			if heliArea then
+				local heliPad = heliArea:FindFirstChild("HeliPad")
+				if heliPad then
+					-- Delete "Union" if it exists
+					local unionObject = heliPad:FindFirstChild("Union")
+					if unionObject then
+						unionObject:Destroy()
+						print("Union has been deleted.")
+					end
+
+					-- Delete "HeliGui" if it exists
+					local heliGuiObject = heliPad:FindFirstChild("HeliGui")
+					if heliGuiObject then
+						heliGuiObject:Destroy()
+						print("HeliGui has been deleted.")
+					end
+				else
+					warn("HeliPad not found in HeliArea!")
+				end
+			else
+				warn("HeliArea not found in lobby!")
+			end
+		else
+			warn("Lobby folder not found in workspace!")
+		end
+	end    
+})
+
+
 Tab:AddToggle({
     Name = "Autofarm glass bridge",
     Default = false,
