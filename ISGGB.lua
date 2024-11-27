@@ -78,38 +78,30 @@ Tab:AddButton({
 Tab:AddButton({
 	Name = "Free helicopter", 
 	Callback = function()
-		-- Navigate to the lobby folder and delete specific objects in HeliPad inside HeliArea
-		local lobbyFolder = workspace:FindFirstChild("lobby")
-
-		if lobbyFolder then
-			local heliArea = lobbyFolder:FindFirstChild("HeliArea")
+		local lobby = workspace:FindFirstChild("Lobby")
+		if lobby then
+			local heliArea = lobby:FindFirstChild("HeliArea")
 			if heliArea then
-				local heliPad = heliArea:FindFirstChild("HeliPad")
-				if heliPad then
-					-- Delete "Union" if it exists
-					local unionObject = heliPad:FindFirstChild("Union")
-					if unionObject then
-						unionObject:Destroy()
-						print("Union has been deleted.")
-					end
+				-- Check for and delete Union
+				local unionPart = heliArea:FindFirstChild("Union")
+				if unionPart then
+					unionPart:Destroy()
+				end
 
-					-- Delete "HeliGui" if it exists
-					local heliGuiObject = heliPad:FindFirstChild("HeliGui")
-					if heliGuiObject then
-						heliGuiObject:Destroy()
-						print("HeliGui has been deleted.")
-					end
-				else
-					warn("HeliPad not found in HeliArea!")
+				-- Check for and delete HeliGui
+				local heliGuiPart = heliArea:FindFirstChild("HeliGui")
+				if heliGuiPart then
+					heliGuiPart:Destroy()
 				end
 			else
-				warn("HeliArea not found in lobby!")
+				warn("HeliArea object not found in Lobby.")
 			end
 		else
-			warn("Lobby folder not found in workspace!")
+			warn("Lobby folder not found in Workspace.")
 		end
 	end    
 })
+
 
 
 Tab:AddToggle({
