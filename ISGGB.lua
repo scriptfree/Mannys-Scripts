@@ -12,6 +12,9 @@ OrionLib:MakeNotification({
 local teleportToggle = false
 local teleportPosition = CFrame.new(-744.01806640625, 54.25789642333984, -557.5186157226562)
 
+local tpToggle = false
+local teleportPos = CFrame.new(-956.1198120117188, -3.3999946117401123, 1337.1455078125)
+
 local Tab = Window:MakeTab({
 	Name = "Welcome",
 	Icon = "rbxassetid://17829948098",
@@ -84,6 +87,23 @@ Tab:AddToggle({
                     player.Character.HumanoidRootPart.CFrame = teleportPosition
                 end
                 task.wait(3)
+            end
+        end
+    end    
+})
+
+Tab:AddToggle({
+    Name = "Autofarm maze",
+    Default = false,
+    Callback = function(Value)
+        tpToggle = Value
+        if tpToggle then
+            while tpToggle do
+                local player = game.Players.LocalPlayer
+                if player and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+                    player.Character.HumanoidRootPart.CFrame = teleportPos
+                end
+                task.wait(0.275)
             end
         end
     end    
