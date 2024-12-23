@@ -34,122 +34,90 @@ local function teleportToCoins()
 end
 
 
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+
+local espEnabled = false
+local highlights = {}
+
+-- Function to update highlights
 local function updateHighlight(player)
-    -- Check if the player has a character
-    if player.Character then
-        -- Find or create the highlight
-        local highlight = player.Character:FindFirstChild("Highlight")
-        if not highlight then
-            highlight = Instance.new("Highlight")
-            highlight.Name = "Highlight"
-            highlight.Parent = player.Character
-            highlight.OutlineTransparency = 0 -- Outline fully visible
-            highlight.FillTransparency = 0.5 -- Semi-transparent fill
-            highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop -- Always visible
-        end
-        
-        -- Check the player's backpack and character for tools
-        local hasKnife = false
-        local hasGun = false
-        
-        if player.Backpack:FindFirstChild("Knife") or (player.Character and player.Character:FindFirstChild("Knife")) then
-            hasKnife = true
-        end
-        if player.Backpack:FindFirstChild("Gun") or (player.Character and player.Character:FindFirstChild("Gun")) then
-            hasGun = true
-        end
+    if not player.Character or not player.Character:FindFirstChild("HumanoidRootPart") then
+        return
+    end
 
-        -- Set the highlight color based on the tools
-        if hasKnife then
-            highlight.FillColor = Color3.new(1, 0, 0) -- Red fill color for Knife
-            highlight.OutlineColor = Color3.new(1, 0, 0) -- Red outline color for Knife
-        elseif hasGun then
-            highlight.FillColor = Color3.new(0, 0, 1) -- Blue fill color for Gun
-            highlight.OutlineColor = Color3.new(0, 0, 1) -- Blue outline color for Gun
-        else
-            highlight.FillColor = Color3.new(0.5, 0.5, 0.5) -- Grey fill color for others
-            highlight.OutlineColor = Color3.new(1, 1, 1) -- White outline color for others
+    -- Check if highlight already exists
+    local highlight = highlights[player]
+    if not highlight then
+        highlight = Instance.new("Highlight")
+        highlight.Adornee = player.Character
+        highlight.Parent = player.Character
+        highlights[player] = highlight
+    end
+
+    -- Default color is white
+    highlight.FillColor = Color3.new(1, 1, 1)
+
+    -- Check inventory for specific tools
+    local backpack = player:FindFirstChild("Backpack")
+    if backpack then
+        if backpack:FindFirstChild("Knife") then
+            highlight.FillColor = Color3.new(1, 0, 0) -- Red
+        elseif backpack:FindFirstChild("Gun") then
+            highlight.FillColor = Color3.new(0, 0, 1) -- Blue
         end
     end
 end
 
--- Function to remove highlights from a specific player
+-- Function to remove highlights
 local function removeHighlight(player)
-    if player.Character then
-        local highlight = player.Character:FindFirstChild("Highlight")
-        if highlight then
-            highlight:Destroy()
-        end
+    if highlights[player] then
+        highlights[player]:Destroy()
+        highlights[player] = nil
     end
 end
 
--- Function to remove highlights from all players
-local function removeAllHighlights()
-    for _, player in pairs(game.Players:GetPlayers()) do
-        removeHighlight(player)
-    end
-end
-
--- Function to update highlights for all players
-local function updateAllHighlights()
-    for _, player in pairs(game.Players:GetPlayers()) do
-        updateHighlight(player)
-    end
-end
-
--- Function to set up event listeners for a player
-local function setupPlayer(player)
+-- Function to handle players joining
+local function onPlayerAdded(player)
     player.CharacterAdded:Connect(function()
-        -- Delay to ensure player's tools have loaded
-        wait(1)
-        
-        if getgenv().FLO then
-            -- Add/update the highlight for the new player's character
+        if espEnabled then
             updateHighlight(player)
-        else
-            -- Remove the highlight if the toggle is off
-            removeHighlight(player)
         end
-        
-        -- Update highlight if the player's backpack changes
-        player.Backpack.ChildAdded:Connect(function()
-            if getgenv().FLO then
-                updateHighlight(player)
-            else
-                removeHighlight(player)
-            end
-        end)
-        player.Backpack.ChildRemoved:Connect(function()
-            if getgenv().FLO then
-                updateHighlight(player)
-            else
-                removeHighlight(player)
-            end
-        end)
     end)
 end
 
--- Event listener for new players joining
-game.Players.PlayerAdded:Connect(function(player)
-    setupPlayer(player)
-end)
-
 -- Setup existing players
-for _, player in pairs(game.Players:GetPlayers()) do
-    setupPlayer(player)
+for _, player in ipairs(Players:GetPlayers()) do
+    onPlayerAdded(player)
 end
 
-window:Toggle("ESP",false, function(t)
-    getgenv().FLO = t
-    if getgenv().FLO then
-        while getgenv().FLO do
-            updateAllHighlights()
-            wait(0.5)
+Players.PlayerAdded:Connect(onPlayerAdded)
+
+-- Toggle for ESP
+window:Toggle("ESP", false, function(state)
+    espEnabled = state
+    if espEnabled then
+        -- Add highlights to all players
+        for _, player in ipairs(Players:GetPlayers()) do
+            updateHighlight(player)
         end
     else
-        removeAllHighlights()
+        -- Remove highlights from all players
+        for _, player in ipairs(Players:GetPlayers()) do
+            removeHighlight(player)
+        end
     end
 end)
+
+-- Continuously update inventory-based highlights
+RunService.Heartbeat:Connect(function()
+    if espEnabled then
+        for _, player in ipairs(Players:GetPlayers()) do
+            updateHighlight(player)
+        end
+    end
+end)
+
 
 local bringEnemiesToggle = false
 local originalPositions = {}
@@ -236,7 +204,7 @@ window:Toggle("Bring all enemies",false,function(t)
     game.Players.PlayerAdded:Connect(onPlayerAdded)
 end)
 
-window:Toggle("Autofarm coins", true, function(t)
+window:Toggle("Autofarm coins", false, function(t)
     getgenv().FLO = t
     spawn(function()
         while getgenv().FLO do
