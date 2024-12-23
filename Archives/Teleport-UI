@@ -1,0 +1,208 @@
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+
+local screenGui = Instance.new("ScreenGui")
+screenGui.Parent = game.CoreGui
+
+local mainFrame = Instance.new("Frame")
+mainFrame.Size = UDim2.new(0, 200, 0, 300)
+mainFrame.Position = UDim2.new(1, -210, 1, -310)
+mainFrame.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
+mainFrame.BorderSizePixel = 0
+mainFrame.Parent = screenGui
+
+local cornerMainFrame = Instance.new("UICorner")
+cornerMainFrame.CornerRadius = UDim.new(0, 10)
+cornerMainFrame.Parent = mainFrame
+
+local scrollingFrame = Instance.new("ScrollingFrame")
+scrollingFrame.Size = UDim2.new(1, -10, 1, -80)
+scrollingFrame.Position = UDim2.new(0, 5, 0, 5)
+scrollingFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
+scrollingFrame.ScrollBarThickness = 5
+scrollingFrame.BackgroundColor3 = Color3.new(0.1, 0.1, 0.1)
+scrollingFrame.BorderSizePixel = 0
+scrollingFrame.Parent = mainFrame
+
+local cornerScrollingFrame = Instance.new("UICorner")
+cornerScrollingFrame.CornerRadius = UDim.new(0, 10)
+cornerScrollingFrame.Parent = scrollingFrame
+
+local buttonSize = UDim2.new(0, 40, 0, 40)
+
+local teleportButton = Instance.new("ImageButton")
+teleportButton.Size = buttonSize
+teleportButton.Position = UDim2.new(0.5, -50, 1, -60)
+teleportButton.BackgroundColor3 = Color3.fromRGB(128, 0, 255)
+teleportButton.BackgroundTransparency = 0.5
+teleportButton.Image = "rbxassetid://6953990113"
+teleportButton.ScaleType = Enum.ScaleType.Fit
+teleportButton.Parent = mainFrame
+
+local closeButton = Instance.new("ImageButton")
+closeButton.Size = buttonSize
+closeButton.Position = UDim2.new(0.5, 10, 1, -60)
+closeButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+closeButton.BackgroundTransparency = 0.5
+closeButton.Image = "rbxassetid://10152135063"
+closeButton.ScaleType = Enum.ScaleType.Fit
+closeButton.Parent = mainFrame
+
+local cornerTeleportButton = Instance.new("UICorner")
+cornerTeleportButton.CornerRadius = UDim.new(1, 0)
+cornerTeleportButton.Parent = teleportButton
+
+local cornerCloseButton = Instance.new("UICorner")
+cornerCloseButton.CornerRadius = UDim.new(1, 0)
+cornerCloseButton.Parent = closeButton
+
+local selectedPlayerName
+local selectedButton
+local teleportBehindPlayerToggle = false
+
+
+-- Fetch profile picture of a player by UserId
+local function getProfilePic(userId)
+    local success, playerData = pcall(function()
+        return Players:GetUserThumbnailAsync(userId, Enum.ThumbnailType.HeadShot, Enum.ThumbnailSize.Size420x420)
+    end)
+    
+    return success and playerData or "rbxassetid://0"  -- Default image if failed
+end
+
+-- Update player list with profile pictures and names
+local function updatePlayerList()
+    scrollingFrame:ClearAllChildren()
+    
+    local playerCount = 0
+    for _, player in ipairs(Players:GetPlayers()) do
+        playerCount = playerCount + 1
+
+        -- Player button with profile image and name
+        local playerButton = Instance.new("TextButton")
+        playerButton.Size = UDim2.new(1, -10, 0, 40)
+        playerButton.Position = UDim2.new(0, 5, 0, (playerCount - 1) * 45 + 5)
+        playerButton.Text = ""
+        playerButton.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
+        playerButton.TextColor3 = Color3.new(1, 1, 1)
+        playerButton.BorderSizePixel = 0
+        playerButton.Parent = scrollingFrame
+
+        -- Create profile image
+        local profilePic = Instance.new("ImageLabel")
+        profilePic.Size = UDim2.new(0, 30, 0, 30)
+        profilePic.Position = UDim2.new(0, 5, 0, 5)
+        profilePic.Image = getProfilePic(player.UserId)  -- Fetch the player's profile picture
+        profilePic.BackgroundTransparency = 1
+        profilePic.Parent = playerButton
+
+        -- Player name text (reduced spacing)
+        local playerNameText = Instance.new("TextLabel")
+        playerNameText.Size = UDim2.new(0, 140, 0, 30)
+        playerNameText.Position = UDim2.new(0, 40, 0, 5)  -- Adjusted position for more space between the button and text
+        playerNameText.Text = player.Name
+        playerNameText.TextColor3 = Color3.new(1, 1, 1)
+        playerNameText.BackgroundTransparency = 1
+        playerNameText.Parent = playerButton
+
+        local cornerPlayerButton = Instance.new("UICorner")
+        cornerPlayerButton.CornerRadius = UDim.new(0, 10)
+        cornerPlayerButton.Parent = playerButton
+
+        playerButton.MouseButton1Click:Connect(function()
+            if selectedPlayerName == player.Name then
+                selectedPlayerName = nil
+                playerButton.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
+                selectedButton = nil
+            else
+                if selectedButton then
+                    selectedButton.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
+                end
+                selectedPlayerName = player.Name
+                selectedButton = playerButton
+                playerButton.BackgroundColor3 = Color3.fromRGB(0, 128, 0)
+            end
+        end)
+    end
+
+    scrollingFrame.CanvasSize = UDim2.new(0, 0, 0, playerCount * 45 + 5)
+end
+
+updatePlayerList()
+Players.PlayerAdded:Connect(updatePlayerList)
+Players.PlayerRemoving:Connect(updatePlayerList)
+
+teleportButton.MouseButton1Click:Connect(function()
+    if selectedPlayerName then
+        local targetPlayer = Players:FindFirstChild(selectedPlayerName)
+        if targetPlayer and targetPlayer.Character and targetPlayer.Character:FindFirstChild("HumanoidRootPart") then
+            local targetPosition = targetPlayer.Character.HumanoidRootPart.Position
+            if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                if teleportBehindPlayerToggle then
+                    local behindPosition = targetPosition - targetPlayer.Character.HumanoidRootPart.CFrame.LookVector * 5
+                    LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(behindPosition)
+                else
+                    LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(targetPosition)
+                end
+            end
+        end
+    end
+end)
+
+closeButton.MouseButton1Click:Connect(function()
+    screenGui:Destroy()
+end)
+
+local settingsButton = Instance.new("TextButton")
+settingsButton.Size = UDim2.new(0, 100, 0, 40)
+settingsButton.Position = UDim2.new(1, -110, 0.5, -50)
+settingsButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+settingsButton.Text = "Settings"
+settingsButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+settingsButton.TextSize = 14
+settingsButton.Parent = screenGui
+
+local cornerSettingsButton = Instance.new("UICorner")
+cornerSettingsButton.CornerRadius = UDim.new(0.5, 0)
+cornerSettingsButton.Parent = settingsButton
+
+local settingsFrame = Instance.new("Frame")
+settingsFrame.Size = UDim2.new(0, 200, 0, 200)
+settingsFrame.Position = UDim2.new(0.5, -100, 0.5, -100)
+settingsFrame.BackgroundColor3 = Color3.fromRGB(0.1, 0.1, 0.1)
+settingsFrame.BackgroundTransparency = 0.5
+settingsFrame.Visible = false
+settingsFrame.Parent = screenGui
+
+local cornerSettingsFrame = Instance.new("UICorner")
+cornerSettingsFrame.CornerRadius = UDim.new(0, 10)
+cornerSettingsFrame.Parent = settingsFrame
+
+-- Settings toggle for Teleport Behind Player
+local toggleButton1 = Instance.new("TextButton")
+toggleButton1.Size = UDim2.new(0, 180, 0, 40)  -- Wider button
+toggleButton1.Position = UDim2.new(0, 10, 0, 10)
+toggleButton1.BackgroundColor3 = Color3.fromRGB(255, 0, 0)  -- Red when off
+toggleButton1.Text = "Teleport behind player"
+toggleButton1.TextColor3 = Color3.fromRGB(255, 255, 255)
+-- Settings toggle for Teleport Behind Player (continued)
+toggleButton1.TextSize = 14
+toggleButton1.Parent = settingsFrame
+
+local cornerToggleButton1 = Instance.new("UICorner")
+cornerToggleButton1.CornerRadius = UDim.new(0.5, 0)
+cornerToggleButton1.Parent = toggleButton1
+
+toggleButton1.MouseButton1Click:Connect(function()
+    teleportBehindPlayerToggle = not teleportBehindPlayerToggle
+    if teleportBehindPlayerToggle then
+        toggleButton1.BackgroundColor3 = Color3.fromRGB(0, 255, 0) -- Green when on
+    else
+        toggleButton1.BackgroundColor3 = Color3.fromRGB(255, 0, 0) -- Red when off
+    end
+end)
+
+-- Settings button to toggle visibility of settings menu
+settingsButton.MouseButton1Click:Connect(function()
+    settingsFrame.Visible = not settingsFrame.Visible
+end)
