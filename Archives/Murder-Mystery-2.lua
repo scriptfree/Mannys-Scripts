@@ -5,6 +5,34 @@ game:GetService("StarterGui"):SetCore("SendNotification",{
 local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/3aze/LTS/main/lib/turtle.lua"))()
 local window = library:Window("Manny Hub")
 
+local collectedCoins = {}
+
+-- Function to teleport the player slightly above each "Coin_Server" part
+local function teleportToCoins()
+    local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    local rootPart = character:WaitForChild("HumanoidRootPart")
+
+    local coins = workspace:GetDescendants()
+    local foundCoin = false
+
+    for _, item in ipairs(coins) do
+        if item:IsA("BasePart") and item.Name == "Coin_Server" and not collectedCoins[item] then
+            rootPart.CFrame = item.CFrame + Vector3.new(0, 3, 0) -- Teleport 3 units above the coin
+            collectedCoins[item] = true -- Mark this coin as collected
+            foundCoin = true
+            -- Wait until the coin is touched (simple simulation with a delay)
+            wait(0.5) -- Simulate the time it takes to touch the coin
+            break
+        end
+    end
+
+    -- If a Coin_Server is found and touched, teleport back to the specified coordinates
+    if foundCoin then
+        rootPart.CFrame = CFrame.new(-112.5636215209961, 135.0230255126953, 18.94784164428711)
+    end
+end
+
 
 local function updateHighlight(player)
     -- Check if the player has a character
@@ -207,6 +235,17 @@ window:Toggle("Bring all enemies",false,function(t)
     end
     game.Players.PlayerAdded:Connect(onPlayerAdded)
 end)
+
+window:Toggle("Autofarm coins", true, function(t)
+    getgenv().FLO = t
+    spawn(function()
+        while getgenv().FLO do
+            teleportToCoins()
+            wait(2) -- Wait 2 seconds before running again
+        end
+    end)
+end)
+
 
 window:Button("Teleport to gun", function()
     local player = game.Players.LocalPlayer
