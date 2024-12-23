@@ -1,7 +1,9 @@
 game:GetService("StarterGui"):SetCore("SendNotification",{
-                Title = "Success";
-                Text = "Thanks for using Manny Hub!";
-                Duration = 2;})
+    Title = "Success";
+    Text = "Thanks for using Manny Hub!";
+    Duration = 2;
+})
+
 local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/3aze/LTS/main/lib/turtle.lua"))()
 local window = library:Window("Manny Hub")
 
@@ -32,7 +34,6 @@ local function teleportToCoins()
         rootPart.CFrame = CFrame.new(-112.5636215209961, 135.0230255126953, 18.94784164428711)
     end
 end
-
 
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
@@ -69,29 +70,37 @@ local function updateHighlight(player)
     end
 end
 
--- Function to remove highlights
-local function removeHighlight(player)
-    if highlights[player] then
-        highlights[player]:Destroy()
-        highlights[player] = nil
-    end
-end
-
--- Function to handle players joining
+-- Function to handle players joining or respawning
 local function onPlayerAdded(player)
+    -- Update highlight when the player is respawned
     player.CharacterAdded:Connect(function()
         if espEnabled then
             updateHighlight(player)
         end
     end)
+
+    -- Apply highlight on the player's first spawn (or if they are already in the game when the script starts)
+    if espEnabled then
+        updateHighlight(player)
+    end
 end
 
--- Setup existing players
+-- Setup existing players to ensure highlights
 for _, player in ipairs(Players:GetPlayers()) do
     onPlayerAdded(player)
 end
 
+-- Listen for new players joining and handle their highlights
 Players.PlayerAdded:Connect(onPlayerAdded)
+
+-- Continuously update the highlights of all players
+RunService.Heartbeat:Connect(function()
+    if espEnabled then
+        for _, player in ipairs(Players:GetPlayers()) do
+            updateHighlight(player)
+        end
+    end
+end)
 
 -- Toggle for ESP
 window:Toggle("ESP", false, function(state)
@@ -102,14 +111,12 @@ window:Toggle("ESP", false, function(state)
             updateHighlight(player)
         end
     else
-        -- Remove highlights from all players
-        for _, player in ipairs(Players:GetPlayers()) do
-            removeHighlight(player)
-        end
+        -- Keep the highlights for all players if toggled off
+        -- highlights will not be removed, so they persist
     end
 end)
 
--- Continuously update inventory-based highlights
+-- Continuous update of inventory-based highlights
 RunService.Heartbeat:Connect(function()
     if espEnabled then
         for _, player in ipairs(Players:GetPlayers()) do
@@ -117,7 +124,6 @@ RunService.Heartbeat:Connect(function()
         end
     end
 end)
-
 
 local bringEnemiesToggle = false
 local originalPositions = {}
@@ -214,7 +220,6 @@ window:Toggle("Autofarm coins", false, function(t)
     end)
 end)
 
-
 window:Button("Teleport to gun", function()
     local player = game.Players.LocalPlayer
     local character = player.Character or player.CharacterAdded:Wait()
@@ -243,17 +248,14 @@ window:Button("Teleport to gun", function()
     end
 end)
 
-
 window:Button("Teleport to lobby", function()
-game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-109.75447082519531, 154.662109375, 9.228076934814453)
+    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-109.75447082519531, 154.662109375, 9.228076934814453)
 end)
 
 window:Button("Teleport ui", function()
-loadstring(game:HttpGet("https://raw.githubusercontent.com/scriptfree/Mannys-Scripts/refs/heads/main/Archives/Teleport-UI"))()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/scriptfree/Mannys-Scripts/refs/heads/main/Archives/Teleport-UI"))()
 end)
 
 window:Slider("Walkspeed",16,30,16,function(t)
-
     game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = t
-
 end)
