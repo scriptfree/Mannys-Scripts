@@ -1,84 +1,79 @@
-local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
+-- Toggle script for big heads
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local UserInputService = game:GetService("UserInputService")
 
-local Window = OrionLib:MakeWindow({Name = "Manny's Scripts", HidePremium = false, IntroEnabled = false, SaveConfig = nil})
+local toggled = false
+local localPlayer = Players.LocalPlayer
 
-OrionLib:MakeNotification({
-    Name = "Notification",
-    Content = "Successfully loaded.",
-    Image = "rbxassetid://17829956110",
-    Time = 3
-})
-
-Tab:AddToggle({
-    Name = "Bighead",
-    Default = false,
-    Callback = function(Value)
-        local Players = game:GetService("Players")
-        local LocalPlayer = Players.LocalPlayer -- The local player (you)
-        local connections = {} -- Store connections to disconnect later
-
-        local function setBigHead(character, enable)
-            local head = character:FindFirstChild("Head")
-            if head then
-                if enable then
-                    head.Size = Vector3.new(2, 2, 2) -- Set the head size to 2
-                    local mesh = head:FindFirstChild("Mesh") or head:FindFirstChild("SpecialMesh")
-                    if mesh then
-                        mesh.Scale = Vector3.new(2, 2, 2) -- Adjust the mesh scale
-                    end
-                else
-                    head.Size = Vector3.new(1, 1, 1) -- Reset head size to default
-                    local mesh = head:FindFirstChild("Mesh") or head:FindFirstChild("SpecialMesh")
-                    if mesh then
-                        mesh.Scale = Vector3.new(1, 1, 1) -- Reset mesh scale to default
-                    end
-                end
-            end
-        end
-
-        local function handlePlayer(player, enable)
-            if player ~= LocalPlayer then
-                if enable then
-                    local connection = player.CharacterAdded:Connect(function(character)
-                        task.wait(1) -- Wait for the character to fully load
-                        setBigHead(character, true)
-                    end)
-                    table.insert(connections, connection) -- Store connection for later
-                    if player.Character then
-                        setBigHead(player.Character, true) -- Apply to the current character
-                    end
-                else
-                    if player.Character then
-                        setBigHead(player.Character, false) -- Reset the head size
-                    end
-                end
-            end
-        end
-
-        if Value then
-            -- Enable big heads for all players except you
-            for _, player in pairs(Players:GetPlayers()) do
-                handlePlayer(player, true)
-            end
-
-            -- Enable big heads for new players
-            local connection = Players.PlayerAdded:Connect(function(player)
-                handlePlayer(player, true)
-            end)
-            table.insert(connections, connection)
-        else
-            -- Disable big heads for all players except you
-            for _, player in pairs(Players:GetPlayers()) do
-                handlePlayer(player, false)
-            end
-
-            -- Disconnect all stored connections to stop processing
-            for _, connection in pairs(connections) do
-                connection:Disconnect()
-            end
-            connections = {}
+-- Function to give big head to a player
+local function giveBigHead(player)
+    if player.Character and player ~= localPlayer then
+        local head = player.Character:FindFirstChild("Head")
+        if head then
+            head.Size = Vector3.new(5, 5, 5)
+            head.Massless = true
         end
     end
-})
+end
 
-OrionLib:Init()
+-- Function to reset head size
+local function resetHead(player)
+    if player.Character and player ~= localPlayer then
+        local head = player.Character:FindFirstChild("Head")
+        if head then
+            head.Size = Vector3.new(2, 1, 1)
+            head.Massless = false
+        end
+    end
+end
+
+-- Toggle function
+local function toggleBigHeads()
+    toggled = not toggled
+    if toggled then
+        for _, player in pairs(Players:GetPlayers()) do
+            giveBigHead(player)
+        end
+    else
+        for _, player in pairs(Players:GetPlayers()) do
+            resetHead(player)
+        end
+    end
+end
+
+-- Listen for T key press
+UserInputService.InputBegan:Connect(function(input)
+    if input.KeyCode == Enum.KeyCode.T then
+        toggleBigHeads()
+    end
+end)
+
+-- Continuously update for new players or respawns
+Players.PlayerAdded:Connect(function(player)
+    player.CharacterAdded:Connect(function(character)
+        if toggled then
+            giveBigHead(player)
+        end
+    end)
+end)
+
+RunService.Heartbeat:Connect(function()
+    for _, player in pairs(Players:GetPlayers()) do
+        if toggled then
+            giveBigHead(player)
+        end
+    end
+end)
+
+-- Initial setup for players already in the game
+for _, player in pairs(Players:GetPlayers()) do
+    player.CharacterAdded:Connect(function(character)
+        if toggled then
+            giveBigHead(player)
+        end
+    end)
+    if player.Character then
+        giveBigHead(player)
+    end
+end
