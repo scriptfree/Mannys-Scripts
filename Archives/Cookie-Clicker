@@ -1,0 +1,13 @@
+Buy Upgrade
+
+local args = {
+	"Cursor",
+	1,
+	true
+}
+game:GetService("ReplicatedStorage"):WaitForChild("Events"):WaitForChild("BuyBuilding"):FireServer(unpack(args))
+
+
+Click cookie
+
+game:GetService("ReplicatedStorage"):WaitForChild("Events"):WaitForChild("Cookie"):FireServer()
