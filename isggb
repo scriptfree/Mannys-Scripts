@@ -1,0 +1,7 @@
+free rainbow trail
+
+local args = {
+	"equipTrail",
+	"Rainbow"
+}
+game:GetService("ReplicatedStorage"):WaitForChild("RemoteEvents"):WaitForChild("trailRemote"):FireServer(unpack(args))
