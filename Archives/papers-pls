@@ -12,3 +12,15 @@ local args = {
 	game:GetService("Players"):WaitForChild("SimplyOneMistake")
 }
 game:GetService("ReplicatedStorage"):WaitForChild("Events"):WaitForChild("pbAccept"):FireServer(unpack(args))
+
+destroy all walls
+
+local groupDoorsFolder = game:GetService("Workspace"):FindFirstChild("Miscellaneous") and game:GetService("Workspace").Miscellaneous:FindFirstChild("Group_Doors")
+
+if groupDoorsFolder then
+    for _, obj in ipairs(groupDoorsFolder:GetChildren()) do
+        obj:Destroy()
+    end
+else
+    warn("Group_Doors folder not found.")
+end
