@@ -1,0 +1,62 @@
+local OrionLib = loadstring(game:HttpGet(('https://pastebin.com/raw/9fjCMyrA')))()
+
+local Window = OrionLib:MakeWindow({Name = "Manny's Scripts", HidePremium = false, IntroEnabled = false, SaveConfig = nil})
+
+OrionLib:MakeNotification({
+    Name = "Notification",
+    Content = "Successfully loaded.",
+    Image = "rbxassetid://17829956110",
+    Time = 3
+})
+
+local teleportToggle = false
+local teleportPosition = CFrame.new(-744.01806640625, 54.25789642333984, -557.5186157226562)
+
+local tpToggle = false
+local crateToggle = false
+local deleteDuplicatesToggle = false
+
+local Tab = Window:MakeTab({
+	Name = "Welcome",
+	Icon = "rbxassetid://17829948098",
+	PremiumOnly = false
+})
+
+Tab:AddParagraph("Thank you for using Manny's Script","Thank you for using my script, it means a lot to me!")
+
+local Tab = Window:MakeTab({
+	Name = "Main",
+	Icon = "rbxassetid://4034483357",
+	PremiumOnly = false
+})
+
+Tab:AddToggle({
+    Name = "Auto clicker", 
+    Default = false,
+    Callback = function(Value)
+        ac = Value
+        if crateToggle then
+            while ac do
+  
+                game:GetService("ReplicatedStorage"):WaitForChild("Events"):WaitForChild("Cookie"):FireServer()
+                
+                task.wait() -- Adjust the interval as needed
+            end
+        end
+    end    
+})
+
+local Tab = Window:MakeTab({
+	Name = "Exit",
+	Icon = "rbxassetid://9405925538",
+	PremiumOnly = false
+})
+
+Tab:AddButton({
+    Name = "Close gui",
+    Callback = function()
+        OrionLib:Destroy()
+    end    
+})
+
+OrionLib:Init()
