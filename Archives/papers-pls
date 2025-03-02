@@ -1,0 +1,14 @@
+buy passport
+
+local args = {
+	"IRF Passport",
+	"Immgration Two"
+}
+game:GetService("ReplicatedStorage"):WaitForChild("Events"):WaitForChild("73d8cc69-7498-440f-8255-f96518030979"):InvokeServer(unpack(args))
+
+accepted
+
+local args = {
+	game:GetService("Players"):WaitForChild("SimplyOneMistake")
+}
+game:GetService("ReplicatedStorage"):WaitForChild("Events"):WaitForChild("pbAccept"):FireServer(unpack(args))
