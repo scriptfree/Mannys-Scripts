@@ -13,7 +13,8 @@ local teleportToggle = false
 local teleportPosition = CFrame.new(-744.01806640625, 54.25789642333984, -557.5186157226562)
 
 local tpToggle = false
-local teleportPos = CFrame.new(-956.1198120117188, -3.3999946117401123, 1337.1455078125)
+local crateToggle = false
+local deleteDuplicatesToggle = false
 
 local Tab = Window:MakeTab({
 	Name = "Welcome",
@@ -33,10 +34,8 @@ Tab:AddButton({
     Name = "Show path",
     Callback = function()
         local segmentSystem = workspace:FindFirstChild("segmentSystem")
-
         if segmentSystem then
             local segmentsFolder = segmentSystem:FindFirstChild("Segments")
-
             if segmentsFolder then
                 for _, segment in pairs(segmentsFolder:GetChildren()) do
                     local folder = segment:FindFirstChild("Folder")
@@ -61,7 +60,6 @@ Tab:AddButton({
     Name = "Remove vip door",
     Callback = function()
         local vipObject = workspace:FindFirstChild("VIP")
-
         if vipObject then
             local vipDoor = vipObject:FindFirstChild("VipDoor")
             if vipDoor then
@@ -82,13 +80,11 @@ Tab:AddButton({
 		if lobby then
 			local heliArea = lobby:FindFirstChild("HeliArea")
 			if heliArea then
-				-- Check for and delete Union
 				local unionPart = heliArea:FindFirstChild("Union")
 				if unionPart then
 					unionPart:Destroy()
 				end
 
-				-- Check for and delete HeliGui
 				local heliGuiPart = heliArea:FindFirstChild("HeliGui")
 				if heliGuiPart then
 					heliGuiPart:Destroy()
@@ -102,8 +98,6 @@ Tab:AddButton({
 	end    
 })
 
-
-
 Tab:AddToggle({
     Name = "Autofarm glass bridge",
     Default = false,
@@ -115,24 +109,66 @@ Tab:AddToggle({
                 if player and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
                     player.Character.HumanoidRootPart.CFrame = teleportPosition
                 end
-                task.wait(3)
+                task.wait() 
             end
         end
     end    
 })
 
 Tab:AddToggle({
-    Name = "Autofarm maze",
+    Name = "Autoclaim", 
     Default = false,
     Callback = function(Value)
         tpToggle = Value
         if tpToggle then
             while tpToggle do
+                game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("FinishRewardClaimed"):FireServer()
+                task.wait() -- Adjust the interval as needed
+            end
+        end
+    end    
+})
+
+Tab:AddToggle({
+    Name = "Auto Robux Crate", 
+    Default = false,
+    Callback = function(Value)
+        crateToggle = Value
+        if crateToggle then
+            while crateToggle do
+                local args1 = {"processCrate", 3}
+                game:GetService("ReplicatedStorage"):WaitForChild("RemoteEvents"):WaitForChild("crateRemote"):FireServer(unpack(args1))
+                
+                local args2 = {"processReward", 3}
+                game:GetService("ReplicatedStorage"):WaitForChild("RemoteEvents"):WaitForChild("crateRemote"):FireServer(unpack(args2))
+                
+                task.wait() -- Adjust the interval as needed
+            end
+        end
+    end    
+})
+
+Tab:AddToggle({
+    Name = "Remove Duplicate Tools", 
+    Default = false,
+    Callback = function(Value)
+        deleteDuplicatesToggle = Value
+        if deleteDuplicatesToggle then
+            while deleteDuplicatesToggle do
                 local player = game.Players.LocalPlayer
-                if player and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
-                    player.Character.HumanoidRootPart.CFrame = teleportPos
+                if player and player.Backpack then
+                    local seenTools = {}
+                    for _, tool in pairs(player.Backpack:GetChildren()) do
+                        if tool:IsA("Tool") then
+                            if seenTools[tool.Name] then
+                                tool:Destroy()
+                            else
+                                seenTools[tool.Name] = true
+                            end
+                        end
+                    end
                 end
-                task.wait(0.275)
+                task.wait(1) -- Adjust the interval as needed
             end
         end
     end    
@@ -150,6 +186,5 @@ Tab:AddButton({
         OrionLib:Destroy()
     end    
 })
-
 
 OrionLib:Init()
