@@ -1,0 +1,3 @@
+workspace:WaitForChild("ClaimRiverResultsGold"):FireServer()
+
+claim reward
