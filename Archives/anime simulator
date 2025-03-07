@@ -1,0 +1,34 @@
+strength stat train
+local args = {
+	"M1",
+	{}
+}
+game:GetService("ReplicatedStorage"):WaitForChild("CombatRemotes"):WaitForChild("PlayerInput"):FireServer(unpack(args))
+
+redeem code
+
+local args = {
+	"114a101b100c101d101e109f194g177h56i99j52k48l54m54n97o",
+	"turbo"
+}
+game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("99a111b100c101d115e83f101g114h118i105j99k101l194m177n56o99p52q48r54s54t97u"):FireServer(unpack(args))
+
+
+quest accept
+
+not sure what to do with it
+
+local args = {
+	"115a116b97c114d116e194f177g56h99i52j48k54l54m97n",
+	"generalQuest1"
+}
+game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("113a117b101c115d116e83f101g114h118i105j99k101l194m177n56o99p52q48r54s54t97u"):FireServer(unpack(args))
+
+
+quest complete
+
+local args = {
+	"116a114b121c67d111e109f112g108h101i116j101k194l177m56n99o52p48q54r54s97t",
+	"generalQuest1"
+}
+game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("113a117b101c115d116e83f101g114h118i105j99k101l194m177n56o99p52q48r54s54t97u"):FireServer(unpack(args))
