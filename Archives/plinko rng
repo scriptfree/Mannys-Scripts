@@ -9,6 +9,27 @@ OrionLib:MakeNotification({
     Time = 3
 })
 
+local betAmount = 1
+local ballAmount = "1"
+
+Tab:AddTextbox({
+    Name = "Bet Amount", 
+    Default = "1", 
+    TextDisappear = true,
+    Callback = function(value) 
+        betAmount = tonumber(value) or 1 -- Ensure valid number input
+    end	  
+})
+
+Tab:AddTextbox({
+    Name = "Ball Amount", 
+    Default = "1", 
+    TextDisappear = true,
+    Callback = function(value) 
+        ballAmount = value -- Keeping it as a string since that's how it was in your args
+    end	  
+})
+
 Tab:AddToggle({
     Name = "Auto Bet & Roll", 
     Default = false,
@@ -18,8 +39,8 @@ Tab:AddToggle({
             while betToggle do
                 local args = {
                     {
-                        BetAmount = 1,
-                        BallAmount = "1"
+                        BetAmount = betAmount,
+                        BallAmount = ballAmount
                     }
                 }
                 game:GetService("ReplicatedStorage"):WaitForChild("Events"):WaitForChild("Run"):FireServer(unpack(args))
