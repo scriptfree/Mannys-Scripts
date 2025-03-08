@@ -9,28 +9,37 @@ OrionLib:MakeNotification({
     Time = 3
 })
 
+-- Create a Tab for the main scripts
+local MainTab = Window:MakeTab({
+    Name = "Main",
+    Icon = "rbxassetid://17829948098",
+    PremiumOnly = false
+})
+
 local betAmount = 1
 local ballAmount = "1"
 
-Tab:AddTextbox({
+-- Add Textboxes inside the "Main" tab
+MainTab:AddTextbox({
     Name = "Bet Amount", 
     Default = "1", 
     TextDisappear = true,
     Callback = function(value) 
-        betAmount = tonumber(value) or 1 -- Ensure valid number input
+        betAmount = tonumber(value) or 1 -- Ensure it's a valid number
     end	  
 })
 
-Tab:AddTextbox({
+MainTab:AddTextbox({
     Name = "Ball Amount", 
     Default = "1", 
     TextDisappear = true,
     Callback = function(value) 
-        ballAmount = value -- Keeping it as a string since that's how it was in your args
+        ballAmount = value -- Keep as string
     end	  
 })
 
-Tab:AddToggle({
+-- Toggle to auto bet and roll
+MainTab:AddToggle({
     Name = "Auto Bet & Roll", 
     Default = false,
     Callback = function(Value)
@@ -53,14 +62,15 @@ Tab:AddToggle({
     end    
 })
 
-local Tab = Window:MakeTab({
-	Name = "Exit",
-	Icon = "rbxassetid://9405925538",
-	PremiumOnly = false
+-- Create a Tab for exiting
+local ExitTab = Window:MakeTab({
+    Name = "Exit",
+    Icon = "rbxassetid://9405925538",
+    PremiumOnly = false
 })
 
-Tab:AddButton({
-    Name = "Close gui",
+ExitTab:AddButton({
+    Name = "Close GUI",
     Callback = function()
         OrionLib:Destroy()
     end    
