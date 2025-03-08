@@ -1,0 +1,46 @@
+local OrionLib = loadstring(game:HttpGet(('https://pastebin.com/raw/9fjCMyrA')))()
+
+local Window = OrionLib:MakeWindow({Name = "Manny's Scripts", HidePremium = false, IntroEnabled = false, SaveConfig = nil})
+
+OrionLib:MakeNotification({
+    Name = "Notification",
+    Content = "Successfully loaded.",
+    Image = "rbxassetid://17829956110",
+    Time = 3
+})
+
+-- Create a Tab for the main script
+local MainTab = Window:MakeTab({
+    Name = "Main",
+    Icon = "rbxassetid://17829948098",
+    PremiumOnly = false
+})
+
+-- Toggle to automatically open boxes
+MainTab:AddToggle({
+    Name = "Auto Open Boxes", 
+    Default = false,
+    Callback = function(Value)
+        boxToggle = Value
+        while boxToggle do
+            game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Boxes"):WaitForChild("RequestOpen"):InvokeServer()
+            task.wait() -- Adjust interval as needed
+        end
+    end    
+})
+
+-- Create a Tab for exiting
+local ExitTab = Window:MakeTab({
+    Name = "Exit",
+    Icon = "rbxassetid://9405925538",
+    PremiumOnly = false
+})
+
+ExitTab:AddButton({
+    Name = "Close GUI",
+    Callback = function()
+        OrionLib:Destroy()
+    end    
+})
+
+OrionLib:Init()
