@@ -1,0 +1,48 @@
+local OrionLib = loadstring(game:HttpGet(('https://pastebin.com/raw/9fjCMyrA')))()
+
+local Window = OrionLib:MakeWindow({Name = "Manny's Scripts", HidePremium = false, IntroEnabled = false, SaveConfig = nil})
+
+OrionLib:MakeNotification({
+    Name = "Notification",
+    Content = "Successfully loaded.",
+    Image = "rbxassetid://17829956110",
+    Time = 3
+})
+
+Tab:AddToggle({
+    Name = "Auto Bet & Roll", 
+    Default = false,
+    Callback = function(Value)
+        betToggle = Value
+        if betToggle then
+            while betToggle do
+                local args = {
+                    {
+                        BetAmount = 1,
+                        BallAmount = "1"
+                    }
+                }
+                game:GetService("ReplicatedStorage"):WaitForChild("Events"):WaitForChild("Run"):FireServer(unpack(args))
+
+                game:GetService("ReplicatedStorage"):WaitForChild("Events"):WaitForChild("RollComplete"):FireServer()
+
+                task.wait() -- Adjust interval as needed
+            end
+        end
+    end    
+})
+
+local Tab = Window:MakeTab({
+	Name = "Exit",
+	Icon = "rbxassetid://9405925538",
+	PremiumOnly = false
+})
+
+Tab:AddButton({
+    Name = "Close gui",
+    Callback = function()
+        OrionLib:Destroy()
+    end    
+})
+
+OrionLib:Init()
