@@ -70,6 +70,18 @@ MainTab:AddToggle({
     end    
 })
 
+MainTab:AddToggle({
+    Name = "Auto Rebirth", 
+    Default = false,
+    Callback = function(Value)
+        rebirthToggle = Value
+        while rebirthToggle do
+            game:GetService("ReplicatedStorage"):WaitForChild("Events"):WaitForChild("Rebirths"):WaitForChild("Rebirth"):FireServer()
+            task.wait(1) -- Adjust interval as needed
+        end
+    end    
+})
+
 -- Create a Tab for exiting
 local ExitTab = Window:MakeTab({
     Name = "Exit",
