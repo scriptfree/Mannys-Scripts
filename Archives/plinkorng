@@ -1,0 +1,21 @@
+Follow reward
+
+game:GetService("ReplicatedStorage"):WaitForChild("Events"):WaitForChild("FollowCheck"):FireServer()
+
+
+Ball Limit
+
+local args = {
+	"BallAmount",
+	"Ball Limit"
+}
+game:GetService("ReplicatedStorage"):WaitForChild("Events"):WaitForChild("Upgrades"):WaitForChild("TokenUpgrades"):FireServer(unpack(args))
+
+
+Walkspeed
+
+local args = {
+	"Walkspeed",
+	"Walkspeed"
+}
+game:GetService("ReplicatedStorage"):WaitForChild("Events"):WaitForChild("Upgrades"):WaitForChild("TokenUpgrades"):FireServer(unpack(args))
