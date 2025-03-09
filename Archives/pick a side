@@ -1,0 +1,6 @@
+login quest complete
+
+local args = {
+	"Login"
+}
+game:GetService("ReplicatedStorage"):WaitForChild("Signals"):WaitForChild("CompleteQuest"):FireServer(unpack(args))
