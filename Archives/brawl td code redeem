@@ -1,0 +1,4 @@
+local args = {
+	"SQUIDPASS "
+}
+game:GetService("ReplicatedStorage"):WaitForChild("Functions"):WaitForChild("RequestRedeemCode"):InvokeServer(unpack(args))
