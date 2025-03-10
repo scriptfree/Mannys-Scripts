@@ -27,7 +27,7 @@ ScreenGui.Parent = localPlayer:WaitForChild("PlayerGui")
 
 Frame.Parent = ScreenGui
 Frame.Size = UDim2.new(0, 150, 0, 200)
-Frame.Position = UDim2.new(0, 10, 0, 10)
+Frame.Position = UDim2.new(1, -160, 1, -210) -- Adjusted for bottom right position
 Frame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
 Frame.BorderSizePixel = 2
 
