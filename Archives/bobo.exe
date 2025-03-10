@@ -67,19 +67,26 @@ SpeedBoostToggle.Text = "Speed Boost: OFF"
 SpeedBoostToggle.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
 SpeedBoostToggle.MouseButton1Click:Connect(function()
     speedBoostEnabled = not speedBoostEnabled
-    local character = localPlayer.Character
-    if character then
-        local humanoid = character:FindFirstChildOfClass("Humanoid")
-        if humanoid then
-            if speedBoostEnabled then
-                originalWalkSpeed = humanoid.WalkSpeed
-                humanoid.WalkSpeed = 80
-            else
-                humanoid.WalkSpeed = originalWalkSpeed
+    SpeedBoostToggle.Text = "Speed Boost: " .. (speedBoostEnabled and "ON" or "OFF")
+    
+    local function applySpeedBoost()
+        local character = localPlayer.Character
+        if character then
+            local humanoid = character:FindFirstChildOfClass("Humanoid")
+            if humanoid then
+                humanoid.WalkSpeed = speedBoostEnabled and 80 or originalWalkSpeed
             end
         end
     end
-    SpeedBoostToggle.Text = "Speed Boost: " .. (speedBoostEnabled and "ON" or "OFF")
+    
+    applySpeedBoost()
+    
+    localPlayer.CharacterAdded:Connect(function()
+        if speedBoostEnabled then
+            wait(0.5) -- Ensure the character loads properly
+            applySpeedBoost()
+        end
+    end)
 end)
 
 HitboxToggle.Parent = Frame
