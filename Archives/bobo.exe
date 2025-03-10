@@ -6,8 +6,12 @@ local mouse = localPlayer:GetMouse()
 local noclipEnabled = false
 local clickTeleportEnabled = false
 local speedBoostEnabled = false
+local hitboxEnabled = false
 local originalWalkSpeed = 16
 local dragging, dragInput, dragStart, startPos
+
+_G.HeadSize = 20 -- Original size
+_G.Disabled = true
 
 -- Create UI
 local ScreenGui = Instance.new("ScreenGui")
@@ -17,11 +21,12 @@ local Title = Instance.new("TextLabel")
 local ClickTpToggle = Instance.new("TextButton")
 local NoClipToggle = Instance.new("TextButton")
 local SpeedBoostToggle = Instance.new("TextButton")
+local HitboxToggle = Instance.new("TextButton")
 
 ScreenGui.Parent = localPlayer:WaitForChild("PlayerGui")
 
 Frame.Parent = ScreenGui
-Frame.Size = UDim2.new(0, 150, 0, 160)
+Frame.Size = UDim2.new(0, 150, 0, 200)
 Frame.Position = UDim2.new(0, 10, 0, 10)
 Frame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
 Frame.BorderSizePixel = 2
@@ -77,25 +82,31 @@ SpeedBoostToggle.MouseButton1Click:Connect(function()
     SpeedBoostToggle.Text = "Speed Boost: " .. (speedBoostEnabled and "ON" or "OFF")
 end)
 
--- Click to Teleport functionality
-mouse.Button1Down:Connect(function()
-    if clickTeleportEnabled then
-        local character = localPlayer.Character
-        if character then
-            local humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
-            if humanoidRootPart then
-                humanoidRootPart.CFrame = CFrame.new(mouse.Hit.p + Vector3.new(0, 3, 0))
-            end
-        end
-    end
+HitboxToggle.Parent = Frame
+HitboxToggle.Size = UDim2.new(1, -10, 0, 40)
+HitboxToggle.Position = UDim2.new(0, 5, 0, 160)
+HitboxToggle.Text = "Hitbox: OFF"
+HitboxToggle.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
+HitboxToggle.MouseButton1Click:Connect(function()
+    hitboxEnabled = not hitboxEnabled
+    _G.Disabled = not hitboxEnabled
+    HitboxToggle.Text = "Hitbox: " .. (hitboxEnabled and "ON" or "OFF")
 end)
 
--- NoClip functionality
-RunService.Stepped:Connect(function()
-    if noclipEnabled then
-        for _, part in pairs(localPlayer.Character:GetChildren()) do
-            if part:IsA("BasePart") then
-                part.CanCollide = false
+RunService.RenderStepped:Connect(function()
+    if not _G.Disabled then
+        for _, player in pairs(Players:GetPlayers()) do
+            if player ~= localPlayer and player.Character then
+                pcall(function()
+                    local rootPart = player.Character:FindFirstChild("HumanoidRootPart")
+                    if rootPart then
+                        rootPart.Size = Vector3.new(_G.HeadSize, _G.HeadSize, _G.HeadSize)
+                        rootPart.Transparency = 0.9
+                        rootPart.BrickColor = BrickColor.new("Really black")
+                        rootPart.Material = "Neon"
+                        rootPart.CanCollide = false
+                    end
+                end)
             end
         end
     end
