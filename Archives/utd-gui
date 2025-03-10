@@ -1,0 +1,55 @@
+local OrionLib = loadstring(game:HttpGet(('https://pastebin.com/raw/9fjCMyrA')))()
+
+local Window = OrionLib:MakeWindow({Name = "Manny's Scripts", HidePremium = false, IntroEnabled = false, SaveConfig = nil})
+
+OrionLib:MakeNotification({
+    Name = "Notification",
+    Content = "Successfully loaded.",
+    Image = "rbxassetid://17829956110",
+    Time = 3
+})
+
+-- Create Welcome Tab
+local Tab = Window:MakeTab({
+    Name = "Welcome",
+    Icon = "rbxassetid://17829948098",
+    PremiumOnly = false
+})
+
+Tab:AddParagraph("Thank you for using Manny's Script", "Thank you for using my script, it means a lot to me!")
+
+-- Create Main Tab
+local MainTab = Window:MakeTab({
+    Name = "Main",
+    Icon = "rbxassetid://17829948098",
+    PremiumOnly = false
+})
+
+-- Toggle to instantly catch fish
+MainTab:AddToggle({
+    Name = "Instantly Catch Fish", 
+    Default = false,
+    Callback = function(Value)
+        fishToggle = Value
+        while fishToggle do
+            game:GetService("ReplicatedStorage"):WaitForChild("Modules"):WaitForChild("GlobalInit"):WaitForChild("RemoteEvents"):WaitForChild("PlayerCatchFish"):FireServer()
+            task.wait() -- Runs as fast as possible
+        end
+    end    
+})
+
+-- Create Exit Tab
+local ExitTab = Window:MakeTab({
+    Name = "Exit",
+    Icon = "rbxassetid://9405925538",
+    PremiumOnly = false
+})
+
+ExitTab:AddButton({
+    Name = "Close GUI",
+    Callback = function()
+        OrionLib:Destroy()
+    end    
+})
+
+OrionLib:Init()
