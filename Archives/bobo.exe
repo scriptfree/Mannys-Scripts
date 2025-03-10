@@ -74,6 +74,7 @@ SpeedBoostToggle.MouseButton1Click:Connect(function()
         if character then
             local humanoid = character:FindFirstChildOfClass("Humanoid")
             if humanoid then
+                -- Use the original walk speed if speed boost is off
                 humanoid.WalkSpeed = speedBoostEnabled and 80 or originalWalkSpeed
             end
         end
