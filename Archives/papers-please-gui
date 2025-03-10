@@ -1,0 +1,105 @@
+local Players = game:GetService("Players")
+local UserInputService = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
+local localPlayer = Players.LocalPlayer
+local mouse = localPlayer:GetMouse()
+
+-- Create UI
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.ResetOnSpawn = false -- Prevents UI from disappearing on death
+local Frame = Instance.new("Frame")
+local Title = Instance.new("TextLabel")
+local RemoveWallsButton = Instance.new("TextButton")
+local AcceptButton = Instance.new("TextButton")
+local BuyPassportButton = Instance.new("TextButton")
+
+ScreenGui.Parent = localPlayer:WaitForChild("PlayerGui")
+
+Frame.Parent = ScreenGui
+Frame.Size = UDim2.new(0, 150, 0, 260)
+Frame.Position = UDim2.new(0, 10, 0, 10)
+Frame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+Frame.BorderSizePixel = 2
+
+Title.Parent = Frame
+Title.Size = UDim2.new(1, 0, 0, 20)
+Title.Position = UDim2.new(0, 0, 0, 0)
+Title.Text = "Bobo.exe"
+Title.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+Title.Font = Enum.Font.SourceSansBold
+Title.TextSize = 16
+
+-- Remove Walls Button
+RemoveWallsButton.Parent = Frame
+RemoveWallsButton.Size = UDim2.new(1, -10, 0, 60)
+RemoveWallsButton.Position = UDim2.new(0, 5, 0, 25)
+RemoveWallsButton.Text = "Remove Walls"
+RemoveWallsButton.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
+RemoveWallsButton.MouseButton1Click:Connect(function()
+    local groupDoorsFolder = game:GetService("Workspace"):FindFirstChild("Miscellaneous") and game:GetService("Workspace").Miscellaneous:FindFirstChild("Group_Doors")
+
+    if groupDoorsFolder then
+        for _, obj in ipairs(groupDoorsFolder:GetChildren()) do
+            obj:Destroy()
+        end
+    else
+        warn("Group_Doors folder not found.")
+    end
+end)
+
+-- Accept Button
+AcceptButton.Parent = Frame
+AcceptButton.Size = UDim2.new(1, -10, 0, 60)
+AcceptButton.Position = UDim2.new(0, 5, 0, 95)
+AcceptButton.Text = "Accept"
+AcceptButton.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
+AcceptButton.MouseButton1Click:Connect(function()
+    local args = {
+        game:GetService("Players"):WaitForChild(game.Players.LocalPlayer.Name)
+    }
+    game:GetService("ReplicatedStorage"):WaitForChild("Events"):WaitForChild("pbAccept"):FireServer(unpack(args))
+end)
+
+-- Buy Passport Button
+BuyPassportButton.Parent = Frame
+BuyPassportButton.Size = UDim2.new(1, -10, 0, 60)
+BuyPassportButton.Position = UDim2.new(0, 5, 0, 165)
+BuyPassportButton.Text = "Buy Passport"
+BuyPassportButton.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
+BuyPassportButton.MouseButton1Click:Connect(function()
+    local args = {
+        "IRF Passport",
+        "Immgration Two"
+    }
+    game:GetService("ReplicatedStorage"):WaitForChild("Events"):WaitForChild("73d8cc69-7498-440f-8255-f96518030979"):InvokeServer(unpack(args))
+end)
+
+-- Dragging functionality
+local dragging, dragInput, dragStart, startPos
+
+Title.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        dragging = true
+        dragStart = input.Position
+        startPos = Frame.Position
+        input.Changed:Connect(function()
+            if input.UserInputState == Enum.UserInputState.End then
+                dragging = false
+            end
+        end)
+    end
+end)
+
+Title.InputChanged:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseMovement then
+        dragInput = input
+    end
+end)
+
+UserInputService.InputChanged:Connect(function(input)
+    if input == dragInput and dragging then
+        local delta = input.Position - dragStart
+        Frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+    end
+end)
