@@ -24,3 +24,8 @@ if groupDoorsFolder then
 else
     warn("Group_Doors folder not found.")
 end
+
+
+Quit coal mining:
+
+game:GetService("ReplicatedStorage"):WaitForChild("Events"):WaitForChild("04b00a97-c2f4-46eb-be0f-eac3c906f30c"):FireServer()
