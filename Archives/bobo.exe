@@ -5,19 +5,23 @@ local localPlayer = Players.LocalPlayer
 local mouse = localPlayer:GetMouse()
 local noclipEnabled = false
 local clickTeleportEnabled = false
+local speedBoostEnabled = false
+local originalWalkSpeed = 16
 local dragging, dragInput, dragStart, startPos
 
 -- Create UI
 local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.ResetOnSpawn = false -- Prevents UI from disappearing on death
 local Frame = Instance.new("Frame")
 local Title = Instance.new("TextLabel")
 local ClickTpToggle = Instance.new("TextButton")
 local NoClipToggle = Instance.new("TextButton")
+local SpeedBoostToggle = Instance.new("TextButton")
 
 ScreenGui.Parent = localPlayer:WaitForChild("PlayerGui")
 
 Frame.Parent = ScreenGui
-Frame.Size = UDim2.new(0, 150, 0, 120)
+Frame.Size = UDim2.new(0, 150, 0, 160)
 Frame.Position = UDim2.new(0, 10, 0, 10)
 Frame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
 Frame.BorderSizePixel = 2
@@ -49,6 +53,28 @@ NoClipToggle.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
 NoClipToggle.MouseButton1Click:Connect(function()
     noclipEnabled = not noclipEnabled
     NoClipToggle.Text = "NoClip: " .. (noclipEnabled and "ON" or "OFF")
+end)
+
+SpeedBoostToggle.Parent = Frame
+SpeedBoostToggle.Size = UDim2.new(1, -10, 0, 40)
+SpeedBoostToggle.Position = UDim2.new(0, 5, 0, 115)
+SpeedBoostToggle.Text = "Speed Boost: OFF"
+SpeedBoostToggle.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
+SpeedBoostToggle.MouseButton1Click:Connect(function()
+    speedBoostEnabled = not speedBoostEnabled
+    local character = localPlayer.Character
+    if character then
+        local humanoid = character:FindFirstChildOfClass("Humanoid")
+        if humanoid then
+            if speedBoostEnabled then
+                originalWalkSpeed = humanoid.WalkSpeed
+                humanoid.WalkSpeed = 80
+            else
+                humanoid.WalkSpeed = originalWalkSpeed
+            end
+        end
+    end
+    SpeedBoostToggle.Text = "Speed Boost: " .. (speedBoostEnabled and "ON" or "OFF")
 end)
 
 -- Click to Teleport functionality
