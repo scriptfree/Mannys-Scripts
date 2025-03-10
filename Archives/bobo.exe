@@ -120,6 +120,36 @@ RunService.RenderStepped:Connect(function()
     end
 end)
 
+-- Click TP Functionality
+mouse.Button1Down:Connect(function()
+    if clickTeleportEnabled and mouse.Target then
+        local character = localPlayer.Character
+        if character then
+            local rootPart = character:FindFirstChild("HumanoidRootPart")
+            if rootPart then
+                rootPart.CFrame = CFrame.new(mouse.Hit.p)
+            end
+        end
+    end
+end)
+
+-- NoClip Functionality
+local function onNoClip()
+    if noclipEnabled then
+        for _, part in pairs(localPlayer.Character:GetDescendants()) do
+            if part:IsA("BasePart") then
+                part.CanCollide = false
+            end
+        end
+    end
+end
+
+RunService.Stepped:Connect(function()
+    if noclipEnabled then
+        onNoClip()
+    end
+end)
+
 -- Dragging functionality
 Title.InputBegan:Connect(function(input)
     if input.UserInputType == Enum.UserInputType.MouseButton1 then
