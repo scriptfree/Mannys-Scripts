@@ -7,6 +7,7 @@ local noclipEnabled = false
 local clickTeleportEnabled = false
 local speedBoostEnabled = false
 local hitboxEnabled = false
+local infiniteJumpEnabled = false
 local originalWalkSpeed = 16
 local dragging, dragInput, dragStart, startPos
 
@@ -22,12 +23,13 @@ local ClickTpToggle = Instance.new("TextButton")
 local NoClipToggle = Instance.new("TextButton")
 local SpeedBoostToggle = Instance.new("TextButton")
 local HitboxToggle = Instance.new("TextButton")
+local InfiniteJumpToggle = Instance.new("TextButton") -- Add this line
 
 ScreenGui.Parent = localPlayer:WaitForChild("PlayerGui")
 
 Frame.Parent = ScreenGui
-Frame.Size = UDim2.new(0, 150, 0, 200)
-Frame.Position = UDim2.new(1, -160, 1, -210) -- Adjusted for bottom right position
+Frame.Size = UDim2.new(0, 150, 0, 240) -- Adjust size to accommodate the new button
+Frame.Position = UDim2.new(1, -160, 1, -250) -- Adjust position to keep it at the bottom right
 Frame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
 Frame.BorderSizePixel = 2
 
@@ -101,6 +103,16 @@ HitboxToggle.MouseButton1Click:Connect(function()
     HitboxToggle.Text = "Hitbox: " .. (hitboxEnabled and "ON" or "OFF")
 end)
 
+InfiniteJumpToggle.Parent = Frame -- Add this block
+InfiniteJumpToggle.Size = UDim2.new(1, -10, 0, 40)
+InfiniteJumpToggle.Position = UDim2.new(0, 5, 0, 205)
+InfiniteJumpToggle.Text = "Infinite Jump: OFF"
+InfiniteJumpToggle.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
+InfiniteJumpToggle.MouseButton1Click:Connect(function()
+    infiniteJumpEnabled = not infiniteJumpEnabled
+    InfiniteJumpToggle.Text = "Infinite Jump: " .. (infiniteJumpEnabled and "ON" or "OFF")
+end)
+
 RunService.RenderStepped:Connect(function()
     if not _G.Disabled then
         for _, player in pairs(Players:GetPlayers()) do
@@ -147,6 +159,13 @@ end
 RunService.Stepped:Connect(function()
     if noclipEnabled then
         onNoClip()
+    end
+end)
+
+-- Infinite Jump Functionality
+UserInputService.JumpRequest:Connect(function()
+    if infiniteJumpEnabled and localPlayer.Character and localPlayer.Character:FindFirstChildOfClass("Humanoid") then
+        localPlayer.Character:FindFirstChildOfClass("Humanoid"):ChangeState(Enum.HumanoidStateType.Jumping)
     end
 end)
 
