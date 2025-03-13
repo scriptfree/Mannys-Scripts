@@ -1,6 +1,8 @@
 
 local Games = {
 [14607667643] = "https://raw.githubusercontent.com/scriptfree/Mannys-Scripts/refs/heads/main/PLINKO-RNG.lua",
+[10834586502] = "https://raw.githubusercontent.com/scriptfree/Mannys-Scripts/refs/heads/main/The-Battle-Bricks.lua",
+[2965881766] = "https://raw.githubusercontent.com/scriptfree/Mannys-Scripts/refs/heads/main/Brawl-Blox.lua",
 }
 
 if Games[game.PlaceId] then
