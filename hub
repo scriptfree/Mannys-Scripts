@@ -6,5 +6,9 @@ local Games = {
 if Games[game.PlaceId] then
     loadstring(game:HttpGet(Games[game.PlaceId]))()
 else
-  game.Players.LocalPlayer:Kick("Unsupported game!")
+  game:GetService("StarterGui"):SetCore("SendNotification", {
+    Title = "HEY!",
+    Text = "This game isn't supported.",
+    Duration = 3
+})
 end
