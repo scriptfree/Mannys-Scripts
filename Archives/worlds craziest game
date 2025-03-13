@@ -18,7 +18,7 @@ end
 local args = {
     "ToStage",
     {
-        Stage = 50,
+        Stage = 1,
         Challenge = true
     }
 }
