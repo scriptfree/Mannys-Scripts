@@ -1,0 +1,36 @@
+--instantly beat the whole game:
+
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Remote = ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("System")
+
+-- Step 1: Run Stages 1-36 (Normal)
+for stage = 1, 36 do
+    local args = {
+        "ToStage",
+        {
+            Stage = stage
+        }
+    }
+    Remote:FireServer(unpack(args))
+end
+
+-- Step 2: Run Stages 1-50 (Challenge Mode) - Only Once
+local args = {
+    "ToStage",
+    {
+        Stage = 50,
+        Challenge = true
+    }
+}
+Remote:FireServer(unpack(args))
+
+-- Step 3: Run Stages 1-50 (Normal)
+for stage = 1, 50 do
+    local args = {
+        "ToStage",
+        {
+            Stage = stage
+        }
+    }
+    Remote:FireServer(unpack(args))
+end
