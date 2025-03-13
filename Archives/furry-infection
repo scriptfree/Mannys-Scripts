@@ -1,0 +1,8 @@
+--auto infect
+
+game:GetService("Players").LocalPlayer.Character:WaitForChild("Infected"):WaitForChild("InfectEvent"):FireServer()
+
+
+--auto swing bat
+
+game:GetService("Players").LocalPlayer:WaitForChild("Stats"):WaitForChild("HiddenBackpack"):WaitForChild("Bat"):WaitForChild("SwingEvent"):FireServer()
