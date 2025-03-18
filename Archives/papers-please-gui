@@ -34,7 +34,7 @@ Title.TextSize = 16
 RemoveWallsButton.Parent = Frame
 RemoveWallsButton.Size = UDim2.new(1, -10, 0, 60)
 RemoveWallsButton.Position = UDim2.new(0, 5, 0, 25)
-RemoveWallsButton.Text = "Remove Walls"
+RemoveWallsButton.Text = "Remove All Doors"
 RemoveWallsButton.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
 RemoveWallsButton.MouseButton1Click:Connect(function()
     local groupDoorsFolder = game:GetService("Workspace"):FindFirstChild("Miscellaneous") and game:GetService("Workspace").Miscellaneous:FindFirstChild("Group_Doors")
