@@ -24,3 +24,12 @@ for _, code in ipairs(codes) do
     replicator:InvokeServer(unpack(args))
     wait() -- Adding a short delay to avoid potential rate limits
 end
+
+spin
+
+local args = {
+	"FruitsHandler",
+	"Spin",
+	{}
+}
+game:GetService("ReplicatedStorage"):WaitForChild("Replicator"):InvokeServer(unpack(args))
