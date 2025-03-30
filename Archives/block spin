@@ -1,0 +1,6 @@
+local args = {
+	106,
+	"apply_for_job",
+	workspace:WaitForChild("Map"):WaitForChild("Tiles"):WaitForChild("ShoppingTile"):WaitForChild("SteakHouse"):WaitForChild("Interior"):WaitForChild("SteakHouseBeacon")
+}
+game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Send"):FireServer(unpack(args))
