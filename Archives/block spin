@@ -4,3 +4,13 @@ local args = {
 	workspace:WaitForChild("Map"):WaitForChild("Tiles"):WaitForChild("ShoppingTile"):WaitForChild("SteakHouse"):WaitForChild("Interior"):WaitForChild("SteakHouseBeacon")
 }
 game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Send"):FireServer(unpack(args))
+
+
+
+local args = {
+	124,
+	"finish_grilling",
+	workspace:WaitForChild("Map"):WaitForChild("Tiles"):WaitForChild("ShoppingTile"):WaitForChild("SteakHouse"):WaitForChild("Interior"):WaitForChild("Grill"),
+	"Perfect"
+}
+game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Send"):FireServer(unpack(args))
