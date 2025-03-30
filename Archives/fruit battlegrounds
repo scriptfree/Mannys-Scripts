@@ -1,0 +1,26 @@
+redeem all codes:
+
+local codes = {
+    "OMG9HUNDRED!",
+    "MAGNIFICENT890K!!",
+    "BIGDAY",
+    "IAMLEOPARD",
+    "BIGUPDATE20",
+    "ANTICIPATION",
+    "860KHYPEE"
+}
+
+local replicatedStorage = game:GetService("ReplicatedStorage")
+local replicator = replicatedStorage:WaitForChild("Replicator")
+
+for _, code in ipairs(codes) do
+    local args = {
+        "Codes",
+        "Redeem",
+        {
+            Code = code
+        }
+    }
+    replicator:InvokeServer(unpack(args))
+    wait() -- Adding a short delay to avoid potential rate limits
+end
