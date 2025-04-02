@@ -25,6 +25,8 @@ for _, code in ipairs(codes) do
     wait() -- Adding a short delay to avoid potential rate limits
 end
 
+
+
 spin
 
 local args = {
