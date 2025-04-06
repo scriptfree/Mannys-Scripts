@@ -1,5 +1,5 @@
 local args = {
-	106,
+	46,
 	"apply_for_job",
 	workspace:WaitForChild("Map"):WaitForChild("Tiles"):WaitForChild("ShoppingTile"):WaitForChild("SteakHouse"):WaitForChild("Interior"):WaitForChild("SteakHouseBeacon")
 }
@@ -8,7 +8,7 @@ game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Send"
 
 
 local args = {
-	124,
+	46,
 	"finish_grilling",
 	workspace:WaitForChild("Map"):WaitForChild("Tiles"):WaitForChild("ShoppingTile"):WaitForChild("SteakHouse"):WaitForChild("Interior"):WaitForChild("Grill"),
 	"Perfect"
@@ -26,3 +26,41 @@ local args = {
 }
 game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Get"):InvokeServer(unpack(args))
 
+buy hack device
+
+local args = {
+	10,
+	"purchase_consumable",
+	workspace:WaitForChild("ConsumableShopZone_Illegal"),
+	"HackToolBasic"
+}
+game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Get"):InvokeServer(unpack(args))
+
+
+sprint
+
+local args = {
+	46,
+	"set_sprinting",
+	true
+}
+game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Send"):FireServer(unpack(args))
+
+win atm swipe
+
+local args = {
+	76,
+	"atm_win",
+	workspace:WaitForChild("Map"):WaitForChild("Props"):WaitForChild("ATM")
+}
+game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Send"):FireServer(unpack(args))
+
+hack tool begin
+
+local args = {
+	75,
+	"request_begin_hacking",
+	workspace:WaitForChild("Map"):WaitForChild("Props"):WaitForChild("ATM"),
+	"HackToolQuantum"
+}
+game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Send"):FireServer(unpack(args))
