@@ -14,3 +14,15 @@ local args = {
 	"Perfect"
 }
 game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Send"):FireServer(unpack(args))
+
+Auto deposit
+
+local args = {
+	6,
+	"transfer_funds",
+	"hand",
+	"bank",
+	12
+}
+game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Get"):InvokeServer(unpack(args))
+
