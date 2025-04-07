@@ -1,0 +1,4 @@
+local args = {
+	"rep"
+}
+game:GetService("Players").LocalPlayer:WaitForChild("muscleEvent"):FireServer(unpack(args))
