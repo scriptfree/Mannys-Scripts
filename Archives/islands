@@ -10,3 +10,16 @@ game:GetService("ReplicatedStorage"):WaitForChild("rbxts_include"):WaitForChild(
 fish
 
 game:GetService("ReplicatedStorage"):WaitForChild("rbxts_include"):WaitForChild("node_modules"):WaitForChild("@rbxts"):WaitForChild("net"):WaitForChild("out"):WaitForChild("_NetManaged"):WaitForChild("jtEIwpvoyxfyedcIomzEcuywKczW/rpjmsslmMwtNp")
+
+
+
+sell trout
+
+local args = {
+	{
+		merchant = "fisherman",
+		offerId = 5, --change id to whatever you want to sell
+		amount = 1 -- amount you want to sell
+	}
+}
+game:GetService("ReplicatedStorage"):WaitForChild("rbxts_include"):WaitForChild("node_modules"):WaitForChild("@rbxts"):WaitForChild("net"):WaitForChild("out"):WaitForChild("_NetManaged"):WaitForChild("CLIENT_MERCHANT_ORDER_REQUEST"):InvokeServer(unpack(args))
