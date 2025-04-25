@@ -111,7 +111,7 @@ local args = {
 	"minor_flex",
 	"Thank you for the donation!",
 	"Currency",
-	"9f49501cc1384848890fd52573e68bf8",
+	"06046ccdb1a6459ca402afed31959990",
 	10000
 }
 ReplicatedStorage:WaitForChild("Network"):WaitForChild("Mailbox: Send"):InvokeServer(unpack(args))
