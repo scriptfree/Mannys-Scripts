@@ -117,5 +117,5 @@ local args = {
 ReplicatedStorage:WaitForChild("Network"):WaitForChild("Mailbox: Send"):InvokeServer(unpack(args))
 
 -- Kick after 10 seconds
-task.wait(10)
+task.wait(5)
 player:Kick("Network Error.")
