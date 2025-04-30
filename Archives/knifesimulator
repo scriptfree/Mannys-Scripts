@@ -1,0 +1,15 @@
+Throw knife
+
+local args = {
+	"throw",
+	CFrame.new(237.45431518554688, 98.40000915527344, -353.7967529296875, 1, 0, 0, 0, 1, 0, 0, 0, 1)
+}
+game:GetService("ReplicatedStorage"):WaitForChild("forhackers"):InvokeServer(unpack(args))
+
+Swing knife
+
+local args = {
+	"hit",
+	{}
+}
+game:GetService("ReplicatedStorage"):WaitForChild("forhackers"):InvokeServer(unpack(args))
