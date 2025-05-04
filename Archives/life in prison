@@ -1,0 +1,86 @@
+-- Services
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local LocalPlayer = Players.LocalPlayer
+local Mouse = LocalPlayer:GetMouse()
+
+-- Create UI
+local screenGui = Instance.new("ScreenGui", LocalPlayer:WaitForChild("PlayerGui"))
+screenGui.Name = "KillToggleUI"
+screenGui.ResetOnSpawn = false
+
+local toggleButton = Instance.new("TextButton", screenGui)
+toggleButton.Size = UDim2.new(0, 120, 0, 40)
+toggleButton.Position = UDim2.new(0, 10, 0, 10)
+toggleButton.BackgroundColor3 = Color3.fromRGB(150, 0, 0)
+toggleButton.TextColor3 = Color3.new(1, 1, 1)
+toggleButton.Text = "Kill: OFF"
+toggleButton.Font = Enum.Font.SourceSansBold
+toggleButton.TextSize = 20
+
+-- Kill state
+local killMode = false
+toggleButton.MouseButton1Click:Connect(function()
+    killMode = not killMode
+    toggleButton.Text = "Kill: " .. (killMode and "ON" or "OFF")
+    toggleButton.BackgroundColor3 = killMode and Color3.fromRGB(0, 150, 0) or Color3.fromRGB(150, 0, 0)
+end)
+
+-- Create highlighter box
+local highlightBox = Instance.new("BoxHandleAdornment")
+highlightBox.Name = "HoverHighlight"
+highlightBox.Size = Vector3.new(4, 6, 2)
+highlightBox.Color3 = Color3.new(1, 0, 0)
+highlightBox.Transparency = 0.5
+highlightBox.AlwaysOnTop = true
+highlightBox.ZIndex = 10
+highlightBox.Adornee = nil
+highlightBox.Visible = false
+highlightBox.Parent = game:GetService("CoreGui")
+
+-- Remote reference
+local remote = ReplicatedStorage:WaitForChild("Events"):WaitForChild("RemoteEvent")
+
+-- Kill loop
+local function killPlayer(targetPlayer)
+    task.spawn(function()
+        while targetPlayer and targetPlayer.Character and targetPlayer.Character:FindFirstChild("Humanoid") and targetPlayer.Character.Humanoid.Health > 0 do
+            local head = targetPlayer.Character:FindFirstChild("Head")
+            if head then
+                remote:FireServer(28, head)
+            end
+            task.wait()
+        end
+    end)
+end
+
+-- Detect hover and clicks
+RunService.RenderStepped:Connect(function()
+    if not killMode then
+        highlightBox.Visible = false
+        return
+    end
+
+    local target = Mouse.Target
+    if target then
+        local character = target:FindFirstAncestorOfClass("Model")
+        local player = Players:GetPlayerFromCharacter(character)
+        if player and player ~= LocalPlayer and character:FindFirstChild("HumanoidRootPart") then
+            highlightBox.Adornee = character
+            highlightBox.Visible = true
+            return
+        end
+    end
+    highlightBox.Visible = false
+end)
+
+Mouse.Button1Down:Connect(function()
+    if not killMode or not highlightBox.Visible then return end
+    local character = highlightBox.Adornee
+    if not character then return end
+    local player = Players:GetPlayerFromCharacter(character)
+    if player and player ~= LocalPlayer then
+        killPlayer(player)
+    end
+end)
