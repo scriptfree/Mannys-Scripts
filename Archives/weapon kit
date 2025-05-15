@@ -1,0 +1,9 @@
+local codes = {"25K", "PACKS", "COMMUNITY", "TEAMPLAYER", "BYESUMMER"}
+
+for _, code in ipairs(codes) do
+    local args = {
+        "RedeemCode",
+        code
+    }
+    game:GetService("ReplicatedStorage"):WaitForChild("Events"):WaitForChild("DataRequest"):InvokeServer(unpack(args))
+end
